@@ -13,10 +13,11 @@ namespace FTP_Image_Browser
 {
     public partial class Form1 : Form
     {
-
+        FtpClient ftpClient;
         public Form1()
         {
             InitializeComponent();
+            ftpClient.Connect();
             //FtpListDirectory();
         }
         
