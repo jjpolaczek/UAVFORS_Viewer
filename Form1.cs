@@ -16,8 +16,13 @@ namespace FTP_Image_Browser
         FtpClient ftpClient;
         public Form1()
         {
+            ftpClient = new FtpClient();
+            treeViewFolders = new TreeView();
+            Image folderIcon = System.Drawing.Image.FromFile("..\\..\\images\\folder.png");
+            treeViewFolders.ImageList = new ImageList();
+            treeViewFolders.ImageList.Images.Add(folderIcon);
+            
             InitializeComponent();
-            ftpClient.Connect();
             //FtpListDirectory();
         }
         
@@ -30,5 +35,54 @@ namespace FTP_Image_Browser
             gMapControl.SetPositionByKeywords("Warsaw, Poland");
         }
 
+        private void connectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            List<string> dirListing = this.ftpClient.FtpListDirectory("");
+            
+            if (dirListing !=null && dirListing.Contains("UAVFORS"))
+            {
+                Console.WriteLine("We have the connection and appropriate folder");
+                dirListing.Clear();
+                dirListing = this.ftpClient.FtpListDirectory("UAVFORS");
+                foreach(string str in dirListing)
+                {
+                    this.treeViewFolders.Nodes.Add(str);
+                }
+                for(int i = 0; i < treeViewFolders.Nodes.Count;++i)
+                {
+                    treeViewFolders.Nodes[i].SelectedImageIndex = 0;
+                    treeViewFolders.Nodes[i].ImageIndex = 0;
+                }
+                
+            }
+            else
+            {
+                MessageBox.Show("Connection failed - invalid server parameters","Error",MessageBoxButtons.OK);
+            }
+
+        }
+
+        private void buttonMagic_Click(object sender, EventArgs e)
+        {
+            BackgroundWorker ftpRequestWorker = new BackgroundWorker();
+            ftpRequestWorker.DoWork += new DoWorkEventHandler(ftpClient.FtpListDirectoryWorker);
+            ftpRequestWorker.ProgressChanged += new ProgressChangedEventHandler(progressChanged);
+            ftpRequestWorker.WorkerReportsProgress = true;
+            ftpRequestWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(workCompleted);
+            ftpRequestWorker.RunWorkerAsync("UAVFORS");
+        }
+        private void progressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            
+            progressBar.Value = (int) e.ProgressPercentage;
+            labelStatus.Text = (string)e.UserState;
+        }
+        private void workCompleted(object sender, RunWorkerCompletedEventArgs e)
+        {
+            List<string> dirListing = (List<string>) e.Result;
+            Console.WriteLine(dirListing[0].ToString());
+            labelStatus.Text = "Idle";
+            progressBar.Value = 0;
+        }
     }
 }
