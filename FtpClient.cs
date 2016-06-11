@@ -129,7 +129,6 @@ namespace FTP_Image_Browser
 
         // Decoding jpeg files 
         // Added by KŁ 11.06.2016
-        [StructLayout(LayoutKind.Sequential, Pack = 1)]
         public struct SomeData
         {
             public UInt32 time;
