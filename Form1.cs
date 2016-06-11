@@ -18,7 +18,7 @@ namespace FTP_Image_Browser
         {
             ftpClient = new FtpClient();
             treeViewFolders = new TreeView();
-            Image folderIcon = System.Drawing.Image.FromFile("..\\..\\images\\folder.png");
+            Image folderIcon = System.Drawing.Image.FromFile("..\\..\\images\\folder2.png");
             treeViewFolders.ImageList = new ImageList();
             treeViewFolders.ImageList.Images.Add(folderIcon);
             
@@ -68,21 +68,23 @@ namespace FTP_Image_Browser
             ftpRequestWorker.DoWork += new DoWorkEventHandler(ftpClient.FtpListDirectoryWorker);
             ftpRequestWorker.ProgressChanged += new ProgressChangedEventHandler(progressChanged);
             ftpRequestWorker.WorkerReportsProgress = true;
-            ftpRequestWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(workCompleted);
+            ftpRequestWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FtpListFolders);
             ftpRequestWorker.RunWorkerAsync("UAVFORS");
         }
-        private void progressChanged(object sender, ProgressChangedEventArgs e)
-        {
-            
-            progressBar.Value = (int) e.ProgressPercentage;
-            labelStatus.Text = (string)e.UserState;
-        }
-        private void workCompleted(object sender, RunWorkerCompletedEventArgs e)
+        
+        //functions for specific tasks
+        private void FtpListFolders(object sender, RunWorkerCompletedEventArgs e)
         {
             List<string> dirListing = (List<string>) e.Result;
-            Console.WriteLine(dirListing[0].ToString());
             labelStatus.Text = "Idle";
             progressBar.Value = 0;
+        }
+        //General utility functions
+        private void progressChanged(object sender, ProgressChangedEventArgs e)
+        {
+
+            progressBar.Value = (int)e.ProgressPercentage;
+            labelStatus.Text = (string)e.UserState;
         }
     }
 }

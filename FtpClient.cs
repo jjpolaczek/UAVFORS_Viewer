@@ -28,6 +28,7 @@ namespace FTP_Image_Browser
         public void FtpListDirectoryWorker(object sender, DoWorkEventArgs e)
         {
             string remoteDir = (string) e.Argument;
+            (sender as BackgroundWorker).ReportProgress(0, "Connecting to Server");
             // Get the object used to communicate with the server.
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remoteDir);
             request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
@@ -35,6 +36,7 @@ namespace FTP_Image_Browser
             // This example assumes the FTP site uses anonymous logon.
             FtpWebResponse response;
             request.Credentials = new NetworkCredential(username_, password_);
+            
             (sender as BackgroundWorker).ReportProgress(25, "Connecting to Server");
             try
             {
@@ -43,6 +45,7 @@ namespace FTP_Image_Browser
             catch (WebException exception)
             {
                 System.Console.WriteLine("Server not responding, message: " + exception.Message);
+                MessageBox.Show("Cannot connect to remote server \r\nDescription:" + exception.Message, "Error",MessageBoxButtons.OK,MessageBoxIcon.Error);
                 e.Result = null;
                 return;
             }
