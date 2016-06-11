@@ -109,13 +109,13 @@
             // 
             // labelStatus
             // 
-            this.labelStatus.AutoSize = true;
-            this.labelStatus.Location = new System.Drawing.Point(732, 783);
+            this.labelStatus.Location = new System.Drawing.Point(624, 780);
             this.labelStatus.Name = "labelStatus";
-            this.labelStatus.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.labelStatus.Size = new System.Drawing.Size(94, 17);
+            this.labelStatus.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.labelStatus.Size = new System.Drawing.Size(202, 23);
             this.labelStatus.TabIndex = 3;
             this.labelStatus.Text = "Disconnected";
+            this.labelStatus.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // treeViewFolders
             // 
