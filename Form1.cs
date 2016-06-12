@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-
+using System.IO;
 
 namespace FTP_Image_Browser
 {
@@ -95,12 +95,12 @@ namespace FTP_Image_Browser
                     treeViewFolders.Nodes[i].SelectedImageIndex = 1;
                     treeViewFolders.Nodes[i].ImageIndex = 0;
                 }
+                connectionState_ = FtpConnectionState.FolderListing;
 
             }
             else if(dirListing != null && ftpClient.WorkingDir.Contains("UAVFORS/"))
             {
                 //Listing image subdirectory
-                SyncWorkingDirectoryAsync();
                 foreach (string str in dirListing)
                 {
                     Console.WriteLine(str);
@@ -112,9 +112,30 @@ namespace FTP_Image_Browser
         private void FtpDownloadedFiles(object sender, RunWorkerCompletedEventArgs e)
         {
             string [] filesDownloaded = (string[])e.Result;
+
             labelStatus.Text = "Idle";
             progressBar.Value = 0;
-            Console.WriteLine("FILESDOWNLOADEEDEDEDEDEDED");
+            if (connectionState_ == FtpConnectionState.FolderListing)
+            {
+                connectionState_ = FtpConnectionState.Synchronised;
+                //Create list of local files
+                string[] localFiles = Directory.GetFiles(ftpClient.WorkingDir);
+                for (int i = 0; i < localFiles.Length; ++i)
+                {
+                    localFiles[i] = Path.GetFileName(localFiles[i]);
+                }
+                //Refresh local files in node
+                foreach(string str in localFiles)
+                    treeViewFolders.Nodes[0].Nodes.Add(str);
+            }
+            else if(connectionState_ == FtpConnectionState.Synchronised)
+            {
+                //Add only new nodes
+                foreach (string str in filesDownloaded)
+                    treeViewFolders.Nodes[0].Nodes.Add(str);
+            }
+            
+
         }
         //General utility handlers
         private void progressChanged(object sender, ProgressChangedEventArgs e)
@@ -125,9 +146,33 @@ namespace FTP_Image_Browser
 
         private void treeViewFolders_NodeMouseDoubleClick(object sender, TreeNodeMouseClickEventArgs e)
         {
-            Console.WriteLine(e.Node.Text);
             ftpClient.WorkingDir = "UAVFORS/" + e.Node.Text;
-            ListWorkingDirectoryAsync();
+            string dirSynched = e.Node.Text;
+            DialogResult result = MessageBox.Show("Do you want to enable auto synchronisation mode?", "Auto mode", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
+            switch(result)
+            {
+                case DialogResult.Yes:
+                    //Start synchronisation
+                    SyncWorkingDirectoryAsync();
+                    //Enable automode flag
+                    isAutoMode_ = true;
+                    //Clear tree of folders in preparation for files
+                    treeViewFolders.Nodes.Clear();
+                    treeViewFolders.Nodes.Add(dirSynched);
+                    break;
+                case DialogResult.No:
+                    //Start synchronisation
+                    SyncWorkingDirectoryAsync();
+                    isAutoMode_ = false;
+                    treeViewFolders.Nodes.Clear();
+                    treeViewFolders.Nodes.Add(dirSynched);
+                    break;
+                case DialogResult.Cancel:
+                    break;
+                default:
+                    break;
+            }
+
         }
 
         //Menu map handlers//
@@ -166,5 +211,16 @@ namespace FTP_Image_Browser
             gMapControl.MapProvider = GMap.NET.MapProviders.GoogleHybridMapProvider.Instance;
             GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
         }
+
+        //State variables
+        private bool isAutoMode_ = false;
+        private enum FtpConnectionState
+        {
+            Disconnected,
+            Connected,
+            FolderListing,
+            Synchronised
+        };
+        private FtpConnectionState connectionState_ = FtpConnectionState.Disconnected;
     }
 }
