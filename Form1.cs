@@ -33,18 +33,28 @@ namespace FTP_Image_Browser
         {
             // Initialize map:
             gMapControl.MapProvider = GMap.NET.MapProviders.BingHybridMapProvider.Instance;
-            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerOnly;
+            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
             gMapControl.SetPositionByKeywords("Warsaw, Poland");
         }
         private void ListWorkingDirectoryAsync()
         {
-            //start new task in background
+            //start new list directory task in background
             BackgroundWorker ftpRequestWorker = new BackgroundWorker();
             ftpRequestWorker.DoWork += new DoWorkEventHandler(ftpClient.FtpListDirectoryWorker);
             ftpRequestWorker.ProgressChanged += new ProgressChangedEventHandler(progressChanged);
             ftpRequestWorker.WorkerReportsProgress = true;
             ftpRequestWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FtpListFolders);
             ftpRequestWorker.RunWorkerAsync(ftpClient.WorkingDir);
+        }
+        private void SyncWorkingDirectoryAsync()
+        {
+            //start new file synchronization task in background
+            BackgroundWorker ftpRequestWorker = new BackgroundWorker();
+            ftpRequestWorker.DoWork += new DoWorkEventHandler(ftpClient.DownloadAllWorkingDirWorker);
+            ftpRequestWorker.ProgressChanged += new ProgressChangedEventHandler(progressChanged);
+            ftpRequestWorker.WorkerReportsProgress = true;
+            ftpRequestWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FtpDownloadedFiles);
+            ftpRequestWorker.RunWorkerAsync();
         }
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -55,7 +65,7 @@ namespace FTP_Image_Browser
 
         private void buttonMagic_Click(object sender, EventArgs e)
         {
-
+            SyncWorkingDirectoryAsync();
         }
         
         //event handlers for specific tasks
@@ -90,13 +100,21 @@ namespace FTP_Image_Browser
             else if(dirListing != null && ftpClient.WorkingDir.Contains("UAVFORS/"))
             {
                 //Listing image subdirectory
-                ftpClient.DownloadFileWorkingDir(dirListing[0]);
+                SyncWorkingDirectoryAsync();
                 foreach (string str in dirListing)
                 {
                     Console.WriteLine(str);
                 }
 
             }
+        }
+        //Handle file sync return value
+        private void FtpDownloadedFiles(object sender, RunWorkerCompletedEventArgs e)
+        {
+            string [] filesDownloaded = (string[])e.Result;
+            labelStatus.Text = "Idle";
+            progressBar.Value = 0;
+            Console.WriteLine("FILESDOWNLOADEEDEDEDEDEDED");
         }
         //General utility handlers
         private void progressChanged(object sender, ProgressChangedEventArgs e)
@@ -110,6 +128,43 @@ namespace FTP_Image_Browser
             Console.WriteLine(e.Node.Text);
             ftpClient.WorkingDir = "UAVFORS/" + e.Node.Text;
             ListWorkingDirectoryAsync();
+        }
+
+        //Menu map handlers//
+        private void satelliteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            gMapControl.MapProvider = GMap.NET.MapProviders.BingSatelliteMapProvider.Instance;
+            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
+        }
+
+        private void roadToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            gMapControl.MapProvider = GMap.NET.MapProviders.BingMapProvider.Instance;
+            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
+        }
+
+        private void hybridToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            gMapControl.MapProvider = GMap.NET.MapProviders.BingHybridMapProvider.Instance;
+            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
+        }
+
+        private void satelliteToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            gMapControl.MapProvider = GMap.NET.MapProviders.GoogleSatelliteMapProvider.Instance;
+            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
+        }
+
+        private void roadToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            gMapControl.MapProvider = GMap.NET.MapProviders.GoogleMapProvider.Instance;
+            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
+        }
+
+        private void hybridToolStripMenuItem1_Click(object sender, EventArgs e)
+        {
+            gMapControl.MapProvider = GMap.NET.MapProviders.GoogleHybridMapProvider.Instance;
+            GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
         }
     }
 }

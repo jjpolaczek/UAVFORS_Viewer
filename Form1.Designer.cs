@@ -34,6 +34,8 @@
             this.settingsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.remoteServerToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.modifyToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.mapToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.proviToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.actionsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.connectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.disconnectToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -42,6 +44,13 @@
             this.treeViewFolders = new System.Windows.Forms.TreeView();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.buttonMagic = new System.Windows.Forms.Button();
+            this.satelliteToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.roadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.hybridToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.googleToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.satelliteToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.roadToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.hybridToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -87,7 +96,8 @@
             // settingsToolStripMenuItem
             // 
             this.settingsToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.remoteServerToolStripMenuItem});
+            this.remoteServerToolStripMenuItem,
+            this.mapToolStripMenuItem});
             this.settingsToolStripMenuItem.Name = "settingsToolStripMenuItem";
             this.settingsToolStripMenuItem.Size = new System.Drawing.Size(74, 24);
             this.settingsToolStripMenuItem.Text = "Settings";
@@ -105,6 +115,25 @@
             this.modifyToolStripMenuItem.Name = "modifyToolStripMenuItem";
             this.modifyToolStripMenuItem.Size = new System.Drawing.Size(131, 26);
             this.modifyToolStripMenuItem.Text = "Modify";
+            // 
+            // mapToolStripMenuItem
+            // 
+            this.mapToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.proviToolStripMenuItem,
+            this.googleToolStripMenuItem});
+            this.mapToolStripMenuItem.Name = "mapToolStripMenuItem";
+            this.mapToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.mapToolStripMenuItem.Text = "Map provider";
+            // 
+            // proviToolStripMenuItem
+            // 
+            this.proviToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.satelliteToolStripMenuItem,
+            this.roadToolStripMenuItem,
+            this.hybridToolStripMenuItem});
+            this.proviToolStripMenuItem.Name = "proviToolStripMenuItem";
+            this.proviToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.proviToolStripMenuItem.Text = "Bing";
             // 
             // actionsToolStripMenuItem
             // 
@@ -149,7 +178,7 @@
             // 
             this.treeViewFolders.Location = new System.Drawing.Point(668, 43);
             this.treeViewFolders.Name = "treeViewFolders";
-            this.treeViewFolders.Size = new System.Drawing.Size(264, 44);
+            this.treeViewFolders.Size = new System.Drawing.Size(264, 144);
             this.treeViewFolders.TabIndex = 4;
             this.treeViewFolders.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treeViewFolders_NodeMouseDoubleClick);
             // 
@@ -168,6 +197,58 @@
             this.buttonMagic.Text = "Magic!";
             this.buttonMagic.UseVisualStyleBackColor = true;
             this.buttonMagic.Click += new System.EventHandler(this.buttonMagic_Click);
+            // 
+            // satelliteToolStripMenuItem
+            // 
+            this.satelliteToolStripMenuItem.Name = "satelliteToolStripMenuItem";
+            this.satelliteToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.satelliteToolStripMenuItem.Text = "Satellite";
+            this.satelliteToolStripMenuItem.Click += new System.EventHandler(this.satelliteToolStripMenuItem_Click);
+            // 
+            // roadToolStripMenuItem
+            // 
+            this.roadToolStripMenuItem.Name = "roadToolStripMenuItem";
+            this.roadToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.roadToolStripMenuItem.Text = "Road";
+            this.roadToolStripMenuItem.Click += new System.EventHandler(this.roadToolStripMenuItem_Click);
+            // 
+            // hybridToolStripMenuItem
+            // 
+            this.hybridToolStripMenuItem.Name = "hybridToolStripMenuItem";
+            this.hybridToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.hybridToolStripMenuItem.Text = "Hybrid";
+            this.hybridToolStripMenuItem.Click += new System.EventHandler(this.hybridToolStripMenuItem_Click);
+            // 
+            // googleToolStripMenuItem
+            // 
+            this.googleToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.satelliteToolStripMenuItem1,
+            this.roadToolStripMenuItem1,
+            this.hybridToolStripMenuItem1});
+            this.googleToolStripMenuItem.Name = "googleToolStripMenuItem";
+            this.googleToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.googleToolStripMenuItem.Text = "Google";
+            // 
+            // satelliteToolStripMenuItem1
+            // 
+            this.satelliteToolStripMenuItem1.Name = "satelliteToolStripMenuItem1";
+            this.satelliteToolStripMenuItem1.Size = new System.Drawing.Size(181, 26);
+            this.satelliteToolStripMenuItem1.Text = "Satellite";
+            this.satelliteToolStripMenuItem1.Click += new System.EventHandler(this.satelliteToolStripMenuItem1_Click);
+            // 
+            // roadToolStripMenuItem1
+            // 
+            this.roadToolStripMenuItem1.Name = "roadToolStripMenuItem1";
+            this.roadToolStripMenuItem1.Size = new System.Drawing.Size(181, 26);
+            this.roadToolStripMenuItem1.Text = "Road";
+            this.roadToolStripMenuItem1.Click += new System.EventHandler(this.roadToolStripMenuItem1_Click);
+            // 
+            // hybridToolStripMenuItem1
+            // 
+            this.hybridToolStripMenuItem1.Name = "hybridToolStripMenuItem1";
+            this.hybridToolStripMenuItem1.Size = new System.Drawing.Size(181, 26);
+            this.hybridToolStripMenuItem1.Text = "Hybrid";
+            this.hybridToolStripMenuItem1.Click += new System.EventHandler(this.hybridToolStripMenuItem1_Click);
             // 
             // Form1
             // 
@@ -205,6 +286,16 @@
         private System.Windows.Forms.ToolStripMenuItem connectToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem disconnectToolStripMenuItem;
         private System.Windows.Forms.Button buttonMagic;
+        private System.Windows.Forms.ToolStripMenuItem mapToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem proviToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem satelliteToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem roadToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem hybridToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem googleToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem satelliteToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem roadToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem hybridToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
     }
 }
 

@@ -36,7 +36,7 @@ namespace FTP_Image_Browser
             // Get the object used to communicate with the server.
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remoteDir);
             request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-            
+
             FtpWebResponse response;
             request.Credentials = new NetworkCredential(username_, password_);
 
@@ -73,19 +73,83 @@ namespace FTP_Image_Browser
             }
 
 
-            // Console.WriteLine("Directory List Complete, status {0}", response.StatusDescription);
+            Console.WriteLine("Directory List Complete, status {0}", response.StatusDescription);
             (sender as BackgroundWorker).ReportProgress(100, "Directory list complete!");
             reader.Close();
             response.Close();
             e.Result = dirListing;
             return;
         }
-
+        public void DownloadAllWorkingDirWorker(object sender, DoWorkEventArgs e)
+        {
+            //Ensure directory existence
+            if (!Directory.Exists(WorkingDir))
+            {
+                Directory.CreateDirectory(WorkingDir);
+            }
+            //Get list of remote files
+            (sender as BackgroundWorker).ReportProgress(5, "Listing working directory");
+            List<string> dirFiles = FtpListDirectory(WorkingDir);
+            //Create list of local files
+            string[] localFiles = Directory.GetFiles(WorkingDir);
+            (sender as BackgroundWorker).ReportProgress(10, "Sorting downloaded files");
+            for (int i = 0; i < localFiles.Length; ++i)
+            {
+                localFiles[i] = Path.GetFileName(localFiles[i]);
+            }
+            //Remove all existing files from download worklist
+            foreach (string existingFile in localFiles)
+            {
+                dirFiles.Remove(existingFile);
+            }
+            e.Result = new string[dirFiles.Count];
+            dirFiles.CopyTo((string[]) e.Result);
+            //Start downloading remaining files
+            int filesTotal = dirFiles.Count;
+            int fileDownloaded = 1;   
+            while (dirFiles.Count != 0)
+            {
+                double progress = (double)fileDownloaded / filesTotal * 90;
+                (sender as BackgroundWorker).ReportProgress(10 + (int)progress, "Downloading files: " + fileDownloaded.ToString() + "/" + filesTotal.ToString());
+                string fileToDownload = dirFiles[0];
+                DownloadFileWorkingDir(fileToDownload);
+                dirFiles.RemoveAt(0);
+                fileDownloaded++;
+            }
+            (sender as BackgroundWorker).ReportProgress(100, "File Sync completed");
+            return;
+        }
         //Synchronous methods
-        //public void DownloadAllWorkingDir()
-       // {
-
-       // }
+        public void DownloadAllWorkingDir()
+        {
+            //Ensure directory existence
+            if (!Directory.Exists(WorkingDir))
+            {
+                Directory.CreateDirectory(WorkingDir);
+            }
+            //Get list of remote files
+            List<string> dirFiles = FtpListDirectory(WorkingDir);
+            //Create list of local files
+            string[] localFiles = Directory.GetFiles(WorkingDir);
+            for(int i = 0; i < localFiles.Length; ++i)
+            {
+                localFiles[i] = Path.GetFileName(localFiles[i]);
+            }
+            //Remove all existing files from download worklist
+            foreach(string existingFile in localFiles)
+            {
+                dirFiles.Remove(existingFile);
+            }
+            //Start downloading remaining files
+            int filesTotal = dirFiles.Count;
+            while(dirFiles.Count != 0)
+            {
+                string fileToDownload = dirFiles[0];
+                DownloadFileWorkingDir(fileToDownload);
+                dirFiles.RemoveAt(0);
+            }
+            
+        }
         public void DownloadFileWorkingDir(string filename)
         {
             string remotePath = WorkingDir + "/" + filename;
