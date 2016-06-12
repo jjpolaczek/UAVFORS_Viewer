@@ -65,7 +65,7 @@
             this.gMapControl.LevelsKeepInMemmory = 5;
             this.gMapControl.Location = new System.Drawing.Point(12, 43);
             this.gMapControl.MarkersEnabled = true;
-            this.gMapControl.MaxZoom = 18;
+            this.gMapControl.MaxZoom = 20;
             this.gMapControl.MinZoom = 2;
             this.gMapControl.MouseWheelZoomType = GMap.NET.MouseWheelZoomType.MousePositionAndCenter;
             this.gMapControl.Name = "gMapControl";
@@ -133,7 +133,7 @@
             this.roadToolStripMenuItem,
             this.hybridToolStripMenuItem});
             this.proviToolStripMenuItem.Name = "proviToolStripMenuItem";
-            this.proviToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.proviToolStripMenuItem.Size = new System.Drawing.Size(133, 26);
             this.proviToolStripMenuItem.Text = "Bing";
             // 
             // satelliteToolStripMenuItem
@@ -164,27 +164,27 @@
             this.roadToolStripMenuItem1,
             this.hybridToolStripMenuItem1});
             this.googleToolStripMenuItem.Name = "googleToolStripMenuItem";
-            this.googleToolStripMenuItem.Size = new System.Drawing.Size(181, 26);
+            this.googleToolStripMenuItem.Size = new System.Drawing.Size(133, 26);
             this.googleToolStripMenuItem.Text = "Google";
             // 
             // satelliteToolStripMenuItem1
             // 
             this.satelliteToolStripMenuItem1.Name = "satelliteToolStripMenuItem1";
-            this.satelliteToolStripMenuItem1.Size = new System.Drawing.Size(181, 26);
+            this.satelliteToolStripMenuItem1.Size = new System.Drawing.Size(138, 26);
             this.satelliteToolStripMenuItem1.Text = "Satellite";
             this.satelliteToolStripMenuItem1.Click += new System.EventHandler(this.satelliteToolStripMenuItem1_Click);
             // 
             // roadToolStripMenuItem1
             // 
             this.roadToolStripMenuItem1.Name = "roadToolStripMenuItem1";
-            this.roadToolStripMenuItem1.Size = new System.Drawing.Size(181, 26);
+            this.roadToolStripMenuItem1.Size = new System.Drawing.Size(138, 26);
             this.roadToolStripMenuItem1.Text = "Road";
             this.roadToolStripMenuItem1.Click += new System.EventHandler(this.roadToolStripMenuItem1_Click);
             // 
             // hybridToolStripMenuItem1
             // 
             this.hybridToolStripMenuItem1.Name = "hybridToolStripMenuItem1";
-            this.hybridToolStripMenuItem1.Size = new System.Drawing.Size(181, 26);
+            this.hybridToolStripMenuItem1.Size = new System.Drawing.Size(138, 26);
             this.hybridToolStripMenuItem1.Text = "Hybrid";
             this.hybridToolStripMenuItem1.Click += new System.EventHandler(this.hybridToolStripMenuItem1_Click);
             // 
@@ -253,8 +253,7 @@
             // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(944, 809);
             this.Controls.Add(this.buttonMagic);
             this.Controls.Add(this.treeViewFolders);

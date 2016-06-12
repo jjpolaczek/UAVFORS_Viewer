@@ -16,6 +16,7 @@ namespace FTP_Image_Browser
     public partial class Form1 : Form
     {
         FtpClient ftpClient;
+        Overlay overlayImg;
         public Form1()
         {
             ftpClient = new FtpClient();
@@ -25,8 +26,6 @@ namespace FTP_Image_Browser
             treeViewFolders.ImageList = new ImageList();
             treeViewFolders.ImageList.Images.Add(folderIcon1);
             treeViewFolders.ImageList.Images.Add(folderIcon2);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
             InitializeComponent();
             //FtpListDirectory();
         }
@@ -38,7 +37,10 @@ namespace FTP_Image_Browser
             gMapControl.MapProvider = GMap.NET.MapProviders.BingHybridMapProvider.Instance;
             GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
             gMapControl.SetPositionByKeywords("Warsaw, Poland");
-
+            //Initialize image overlay
+            GMapOverlay imageOverlay = new GMapOverlay("images");
+            gMapControl.Overlays.Add(imageOverlay);
+            overlayImg = new Overlay(gMapControl.Overlays[0]);
         }
         private void ListWorkingDirectoryAsync()
         {
@@ -69,19 +71,23 @@ namespace FTP_Image_Browser
 
         private void buttonMagic_Click(object sender, EventArgs e)
         {
-            GMapOverlay imageOverlay = new GMapOverlay("images");
+            //GMapOverlay imageOverlay = new GMapOverlay("images");
             //GMapMarkerImage markerTest = new GMapMarkerImage(new GMap.NET.PointLatLng(52.2297700, 21.0117800));
             //markerTest.Image = newBitmap("..\\..\\images\\folder.png") Bitmap("..\\..\\images\\folder.png");
-            Bitmap imageTest = new Bitmap("..\\..\\images\\folder.png");
-           // imageTest.SetResolution(10, 10);
-            GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(52.2297700, 21.0117800), imageTest);
-           markerTest.Size = new Size(50, 50);
-            imageOverlay.Markers.Add(markerTest);
+            // Bitmap imageTest = new Bitmap("..\\..\\images\\folder2.png");
 
-            gMapControl.Overlays.Add(imageOverlay);
+            // imageTest.SetResolution(10, 10);
+            //GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(52.2297700, 21.0117800), imageTest);
+            // markerTest.Offset = new Point(0, 0);
+            //markerTest.Size = new Size(50, 50);
+            // gMapControl.Overlays[0].Markers.Add(markerTest);
+            overlayImg.AddToOverlay(" ");
+           // gMapControl.Overlays.Add(imageOverlay);
             gMapControl_OnMapZoomChanged();
         }
         
+
+
         //event handlers for specific tasks
 
         //Handle directory list return value
@@ -240,11 +246,7 @@ namespace FTP_Image_Browser
 
         private void gMapControl_OnMapZoomChanged()
         {
-            double zoom = gMapControl.Zoom;
-            int sizenew = (int)(50.0 * zoom / gMapControl.MaxZoom);
-            Console.WriteLine(sizenew.ToString() + " - zoom");
-            
-            gMapControl.Overlays[0].Markers[0].Size = new Size(sizenew,sizenew);
+            overlayImg.ResizeAll(gMapControl.Zoom);
         }
     }
 }
