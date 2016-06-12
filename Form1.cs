@@ -81,7 +81,8 @@ namespace FTP_Image_Browser
             // markerTest.Offset = new Point(0, 0);
             //markerTest.Size = new Size(50, 50);
             // gMapControl.Overlays[0].Markers.Add(markerTest);
-            overlayImg.AddToOverlay(" ");
+            overlayImg.decode(ftpClient.WorkingDir + "/" + treeViewFolders.Nodes[0].Nodes[0].Text);
+            //overlayImg.AddToOverlay(" ");
            // gMapControl.Overlays.Add(imageOverlay);
             gMapControl_OnMapZoomChanged();
         }

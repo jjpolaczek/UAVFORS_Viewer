@@ -8,6 +8,9 @@ using GMap.NET.WindowsForms.Markers;
 using System.Windows.Forms;
 using System.IO;
 using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Reflection.Emit;
 namespace FTP_Image_Browser
 {
     class Overlay
@@ -48,11 +51,18 @@ namespace FTP_Image_Browser
 
         // Decoding jpeg files 
         // Added by KŁ 11.06.2016
-        public struct SomeData
+        public struct ImageData
         {
             public UInt32 time;
 
-            Int32 latitude;
+            float targetLatitude;
+            float targetLongitude;
+
+            float planeAltitude;
+            float planeLatitude;
+            float planeLongitude;
+
+            /*Int32 latitude;
             Int32 longtitude;
             Int32 altitude;
 
@@ -67,21 +77,21 @@ namespace FTP_Image_Browser
             float gyroY;
             float gyroZ;
 
-            char status;
+            char status;*/
         }
         public struct ImageWithData
         {
             public Image image;
 
-            public SomeData data;
+            public ImageData data;
         }
         public ImageWithData decode(string filename)
         {
-            SomeData dataStructure = new SomeData();
+            ImageData dataStructure = new ImageData();
 
             byte[] bytes = System.IO.File.ReadAllBytes(filename);
 
-            int sizeOFStructure = System.Runtime.InteropServices.Marshal.SizeOf(typeof(SomeData));
+            int sizeOFStructure = System.Runtime.InteropServices.Marshal.SizeOf(typeof(ImageData));
 
             byte[] dataBytes = new byte[sizeOFStructure];
 
@@ -93,13 +103,13 @@ namespace FTP_Image_Browser
 
             Marshal.Copy(dataBytes, 0, ptr, size);
 
-            dataStructure = (SomeData)Marshal.PtrToStructure(ptr, dataStructure.GetType());
+            dataStructure = (ImageData)Marshal.PtrToStructure(ptr, dataStructure.GetType());
             Marshal.FreeHGlobal(ptr);
 
             ImageWithData iwd = new ImageWithData();
 
 
-            iwd.image = Image.FromFile("image.jpg");
+            iwd.image = Image.FromFile(filename);
             iwd.data = dataStructure;
 
             return iwd;
