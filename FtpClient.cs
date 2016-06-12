@@ -32,8 +32,7 @@ namespace FTP_Image_Browser
             // Get the object used to communicate with the server.
             FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remoteDir);
             request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-
-            // This example assumes the FTP site uses anonymous logon.
+            
             FtpWebResponse response;
             request.Credentials = new NetworkCredential(username_, password_);
 
@@ -79,6 +78,43 @@ namespace FTP_Image_Browser
         }
 
         //Synchronous methods
+        //public void DownloadAllWorkingDir()
+       // {
+
+       // }
+        public void DownloadFileWorkingDir(string filename)
+        {
+            string remotePath = WorkingDir + "/" + filename;
+            //Ensure directory existence
+            if(!Directory.Exists(WorkingDir))
+            {
+                Directory.CreateDirectory(WorkingDir);
+            }
+            // Get the object used to communicate with the server.
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remotePath);
+            request.Method = WebRequestMethods.Ftp.DownloadFile;
+
+            // use binary mode for file transfer
+            request.Credentials = new NetworkCredential(username_, password_);
+            request.UsePassive = true;
+            request.UseBinary = true;
+            request.KeepAlive = true;
+
+            FtpWebResponse response;
+            response = (FtpWebResponse)request.GetResponse();
+            Console.WriteLine("Download Complete, status {0}", response.StatusDescription);
+            Stream responseStream = response.GetResponseStream();
+            StreamReader reader = new StreamReader(responseStream);
+
+            //Write file to disk directory
+            var fileStream = File.Create(remotePath);
+            //responseStream.Seek(0, SeekOrigin.Begin);
+            responseStream.CopyTo(fileStream);
+
+            fileStream.Close();
+            reader.Close();
+            response.Close();
+        }
         public List<string> FtpListDirectory(string remoteDir)
         {
             // Get the object used to communicate with the server.
