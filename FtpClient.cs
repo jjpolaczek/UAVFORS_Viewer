@@ -5,6 +5,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Windows.Forms;
 using System.ComponentModel;
+using System.Drawing;
+using System.Runtime.InteropServices;
+using System.Reflection;
+using System.Reflection.Emit;
 
 namespace FTP_Image_Browser
 {
@@ -160,6 +164,67 @@ namespace FTP_Image_Browser
 
             return dirListing;
         }
+
+
+        // Decoding jpeg files 
+        // Added by KŁ 11.06.2016
+        public struct SomeData
+        {
+            public UInt32 time;
+
+            Int32 latitude;
+            Int32 longtitude;
+            Int32 altitude;
+
+            float speedX;
+            float speedY;
+
+            float roll;
+            float pitch;
+            float yaw;
+
+            float gyroX;
+            float gyroY;
+            float gyroZ;
+
+            char status;
+        }
+        public struct ImageWithData
+        {
+            public Image image;
+
+            public SomeData data;
+        }
+        public ImageWithData decode(string filename)
+        {
+            SomeData dataStructure = new SomeData();
+
+            byte[] bytes = System.IO.File.ReadAllBytes(filename);
+
+            int sizeOFStructure = System.Runtime.InteropServices.Marshal.SizeOf(typeof(SomeData));
+
+            byte[] dataBytes = new byte[sizeOFStructure];
+
+            for (int i = 0; i < sizeOFStructure; i++)
+                dataBytes[i] = bytes[bytes.GetLength(0) - sizeOFStructure + i];
+
+            int size = Marshal.SizeOf(dataStructure);
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+
+            Marshal.Copy(dataBytes, 0, ptr, size);
+
+            dataStructure = (SomeData)Marshal.PtrToStructure(ptr, dataStructure.GetType());
+            Marshal.FreeHGlobal(ptr);
+
+            ImageWithData iwd = new ImageWithData();
+
+
+            iwd.image = Image.FromFile("image.jpg");
+            iwd.data = dataStructure;
+
+            return iwd;
+        }
+
         public string WorkingDir { get; set; }
         //Server object
         //Default server parameters
