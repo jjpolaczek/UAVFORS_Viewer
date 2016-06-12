@@ -8,6 +8,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using GMap.NET.WindowsForms;
+using GMap.NET.WindowsForms.Markers;
 
 namespace FTP_Image_Browser
 {
@@ -23,7 +25,8 @@ namespace FTP_Image_Browser
             treeViewFolders.ImageList = new ImageList();
             treeViewFolders.ImageList.Images.Add(folderIcon1);
             treeViewFolders.ImageList.Images.Add(folderIcon2);
-
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Pixel, ((byte)(0)));
             InitializeComponent();
             //FtpListDirectory();
         }
@@ -35,6 +38,7 @@ namespace FTP_Image_Browser
             gMapControl.MapProvider = GMap.NET.MapProviders.BingHybridMapProvider.Instance;
             GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
             gMapControl.SetPositionByKeywords("Warsaw, Poland");
+
         }
         private void ListWorkingDirectoryAsync()
         {
@@ -65,7 +69,17 @@ namespace FTP_Image_Browser
 
         private void buttonMagic_Click(object sender, EventArgs e)
         {
-            SyncWorkingDirectoryAsync();
+            GMapOverlay imageOverlay = new GMapOverlay("images");
+            //GMapMarkerImage markerTest = new GMapMarkerImage(new GMap.NET.PointLatLng(52.2297700, 21.0117800));
+            //markerTest.Image = newBitmap("..\\..\\images\\folder.png") Bitmap("..\\..\\images\\folder.png");
+            Bitmap imageTest = new Bitmap("..\\..\\images\\folder.png");
+           // imageTest.SetResolution(10, 10);
+            GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(52.2297700, 21.0117800), imageTest);
+           markerTest.Size = new Size(50, 50);
+            imageOverlay.Markers.Add(markerTest);
+
+            gMapControl.Overlays.Add(imageOverlay);
+            gMapControl_OnMapZoomChanged();
         }
         
         //event handlers for specific tasks
@@ -222,5 +236,35 @@ namespace FTP_Image_Browser
             Synchronised
         };
         private FtpConnectionState connectionState_ = FtpConnectionState.Disconnected;
+        private Timer timerAutoSync_;
+
+        private void gMapControl_OnMapZoomChanged()
+        {
+            double zoom = gMapControl.Zoom;
+            int sizenew = (int)(50.0 * zoom / gMapControl.MaxZoom);
+            Console.WriteLine(sizenew.ToString() + " - zoom");
+            
+            gMapControl.Overlays[0].Markers[0].Size = new Size(sizenew,sizenew);
+        }
+    }
+}
+
+namespace GMap.NET.WindowsForms.Markers
+{
+    using System.Drawing;
+    using System.Drawing.Drawing2D;
+
+    public class GMapMarkerImage : GMapMarker
+    {
+        public System.Drawing.Image Image;
+
+        public GMapMarkerImage(PointLatLng p) : base(p)
+        {
+        }
+
+        public override void OnRender(Graphics g)
+        {
+            g.DrawImage(Image, System.Convert.ToInt32(LocalPosition.X - Size.Width / 2), System.Convert.ToInt32(LocalPosition.Y - Size.Height / 2), Size.Width, Size.Height);
+        }
     }
 }
