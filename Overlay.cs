@@ -21,18 +21,19 @@ namespace FTP_Image_Browser
         }
         //Overlay handlers:
         //Add image minature to overlay
-        public void AddToOverlay(string filename)
+        private void AddToOverlay(string filename)
         {
-            Bitmap imageTest = new Bitmap("..\\..\\images\\folder2.png");
+            ImageWithData iwd = decode(filename);
 
-            // imageTest.SetResolution(10, 10);
-            GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(52.2297700, 21.0117800), imageTest);
+            // imageTest.SetResolution(10, 10);new GMarkerGoogle(new GMap.NET.PointLatLng(52.2297700, 21.0117800), imageTest);
+            GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.targetLatitude, iwd.data.targetLongitude), (Bitmap)iwd.image);
             markerTest.Offset = new Point(0, 0);
-            markerTest.Size = new Size(50, 50);
+           // markerTest.Size = new Size(50, 50);
             overlayImg_.Markers.Add(markerTest);
         }
         public void ResizeAll(double zoom)
         {
+            return;
             int sizenew = (int)(4.0 * Math.Pow(zoom,2) / zoomMaxOverlay_);
             if (zoom < zoomMinOverlay_) sizenew = 0;
             //Console.WriteLine(sizenew.ToString() + " - zoom");
@@ -45,6 +46,31 @@ namespace FTP_Image_Browser
                 
             }
         }
+        public void OverlayWorkingDir()
+        {
+            //Create list of local files (with paths)
+            string[] newImg = Directory.GetFiles(WorkingDir);
+            if (newImg == null) return;
+            int imagesTotal = newImg.Count();
+            int imageCurrent = 1;
+            foreach (string file in newImg)
+            {
+                AddToOverlay(file);
+                imageCurrent++;
+            }
+        }
+        public void OverlayNew(string[] newImg)
+        {
+            if (newImg == null) return;
+            int imagesTotal = newImg.Count();
+            int imageCurrent = 1;
+            foreach(string file in newImg)
+            {
+                AddToOverlay(WorkingDir + "/" + file);
+                imageCurrent++;
+            }
+
+        }
         double zoomMaxOverlay_ = 20;
         double zoomMinOverlay_ = 12;
         GMapOverlay overlayImg_;
@@ -55,12 +81,12 @@ namespace FTP_Image_Browser
         {
             public UInt32 time;
 
-            float targetLatitude;
-            float targetLongitude;
+            public float targetLatitude;
+            public float targetLongitude;
 
-            float planeAltitude;
-            float planeLatitude;
-            float planeLongitude;
+            public float planeAltitude;
+            public float planeLatitude;
+            public float planeLongitude;
 
             /*Int32 latitude;
             Int32 longtitude;
@@ -114,5 +140,6 @@ namespace FTP_Image_Browser
 
             return iwd;
         }
+        public string WorkingDir { get; set; }
     }
 }

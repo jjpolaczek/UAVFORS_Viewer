@@ -81,7 +81,7 @@ namespace FTP_Image_Browser
             // markerTest.Offset = new Point(0, 0);
             //markerTest.Size = new Size(50, 50);
             // gMapControl.Overlays[0].Markers.Add(markerTest);
-            overlayImg.decode(ftpClient.WorkingDir + "/" + treeViewFolders.Nodes[0].Nodes[0].Text);
+            //overlayImg.decode(ftpClient.WorkingDir + "/" + treeViewFolders.Nodes[0].Nodes[0].Text);
             //overlayImg.AddToOverlay(" ");
            // gMapControl.Overlays.Add(imageOverlay);
             gMapControl_OnMapZoomChanged();
@@ -148,12 +148,15 @@ namespace FTP_Image_Browser
                 //Refresh local files in node
                 foreach(string str in localFiles)
                     treeViewFolders.Nodes[0].Nodes.Add(str);
+                overlayImg.WorkingDir = ftpClient.WorkingDir;
+                overlayImg.OverlayWorkingDir();
             }
             else if(connectionState_ == FtpConnectionState.Synchronised)
             {
                 //Add only new nodes
                 foreach (string str in filesDownloaded)
                     treeViewFolders.Nodes[0].Nodes.Add(str);
+                overlayImg.OverlayNew(filesDownloaded);
             }
             
 
