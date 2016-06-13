@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Drawing;
-
+using System.Threading.Tasks;
 
 namespace FTP_Image_Browser
 {
@@ -105,15 +105,27 @@ namespace FTP_Image_Browser
             dirFiles.CopyTo((string[]) e.Result);
             //Start downloading remaining files
             int filesTotal = dirFiles.Count;
-            int fileDownloaded = 1;   
+            int fileDownloaded = 1;
+            //Parallelize execution
+            Object lockStatus = new Object();
+            Parallel.ForEach(dirFiles, (file) =>
+            {
+                DownloadFileWorkingDir(file);
+                lock (lockStatus)
+                {
+                    double progress = (double)fileDownloaded / filesTotal * 90;
+                    (sender as BackgroundWorker).ReportProgress(10 + (int)progress, "Downloading files: " + fileDownloaded.ToString() + "/" + filesTotal.ToString());
+                    fileDownloaded++;
+                }
+            });
             while (dirFiles.Count != 0)
             {
-                double progress = (double)fileDownloaded / filesTotal * 90;
-                (sender as BackgroundWorker).ReportProgress(10 + (int)progress, "Downloading files: " + fileDownloaded.ToString() + "/" + filesTotal.ToString());
-                string fileToDownload = dirFiles[0];
-                DownloadFileWorkingDir(fileToDownload);
+                //double progress = (double)fileDownloaded / filesTotal * 90;
+                //(sender as BackgroundWorker).ReportProgress(10 + (int)progress, "Downloading files: " + fileDownloaded.ToString() + "/" + filesTotal.ToString());
+               // string fileToDownload = dirFiles[0];
+               // DownloadFileWorkingDir(fileToDownload);
                 dirFiles.RemoveAt(0);
-                fileDownloaded++;
+                //fileDownloaded++;
             }
             (sender as BackgroundWorker).ReportProgress(100, "File Sync completed");
             autoWorking = false;
@@ -169,7 +181,15 @@ namespace FTP_Image_Browser
             request.KeepAlive = true;
 
             FtpWebResponse response;
-            response = (FtpWebResponse)request.GetResponse();
+            try
+            {
+                response = (FtpWebResponse)request.GetResponse();
+            }
+            catch (WebException exception)
+            {
+                System.Console.WriteLine("Server not responding, message: " + exception.Message);
+                return;
+            }
             Console.WriteLine("Download Complete, status {0}", response.StatusDescription);
             Stream responseStream = response.GetResponseStream();
             StreamReader reader = new StreamReader(responseStream);
