@@ -76,7 +76,7 @@
             this.gMapControl.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.gMapControl.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.gMapControl.ShowTileGridLines = false;
-            this.gMapControl.Size = new System.Drawing.Size(650, 712);
+            this.gMapControl.Size = new System.Drawing.Size(657, 642);
             this.gMapControl.TabIndex = 0;
             this.gMapControl.Zoom = 8D;
             this.gMapControl.OnMapZoomChanged += new GMap.NET.MapZoomChanged(this.gMapControl_OnMapZoomChanged);
@@ -90,7 +90,7 @@
             this.actionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(944, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1005, 28);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -212,14 +212,14 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(832, 780);
+            this.progressBar.Location = new System.Drawing.Point(858, 719);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(100, 23);
             this.progressBar.TabIndex = 2;
             // 
             // labelStatus
             // 
-            this.labelStatus.Location = new System.Drawing.Point(624, 780);
+            this.labelStatus.Location = new System.Drawing.Point(635, 719);
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.labelStatus.Size = new System.Drawing.Size(202, 23);
@@ -254,7 +254,7 @@
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(944, 809);
+            this.ClientSize = new System.Drawing.Size(1005, 742);
             this.Controls.Add(this.buttonMagic);
             this.Controls.Add(this.treeViewFolders);
             this.Controls.Add(this.labelStatus);

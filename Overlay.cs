@@ -46,7 +46,7 @@ namespace FTP_Image_Browser
             //overlayImg_.OnRender();
             int pixdist = downPointScale_.LocalArea.Y - upPointScale_.LocalArea.Y;
             Console.WriteLine(pixdist.ToString());
-            int sizenew = pixdist + resizetest;
+            int sizenew = pixdist / 2 + resizetest;
             if (zoom < zoomMinOverlay_) sizenew = 0;
             //Console.WriteLine(sizenew.ToString() + " - zoom");
             if(overlayImg_ != null)
