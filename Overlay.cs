@@ -18,7 +18,17 @@ namespace FTP_Image_Browser
         public Overlay(GMapOverlay overlay)
         {
             overlayImg_ = overlay;
+            downPointScale_ = new GMarkerGoogle(new GMap.NET.PointLatLng(0.0, 0.0), GMarkerGoogleType.blue_dot);
+            downPointScale_.Tag = "left";
+            downPointScale_.Size = new Size(0, 0);
+            upPointScale_ = new GMarkerGoogle(new GMap.NET.PointLatLng(10.0/111000, 0.0), GMarkerGoogleType.blue_dot);
+            upPointScale_.Tag = "right";
+            upPointScale_.Size = new Size(0, 0);
+            overlayImg_.Markers.Add(downPointScale_);
+            overlayImg_.Markers.Add(upPointScale_);
+            //Todo scale variably edepending on latitude
         }
+        public GMarkerGoogle downPointScale_, upPointScale_;
         //Overlay handlers:
         //Add image minature to overlay
         private void AddToOverlay(string filename)
@@ -33,19 +43,24 @@ namespace FTP_Image_Browser
         }
         public void ResizeAll(double zoom)
         {
-            return;
-            int sizenew = (int)(4.0 * Math.Pow(zoom,2) / zoomMaxOverlay_);
+            //overlayImg_.OnRender();
+            int pixdist = downPointScale_.LocalArea.Y - upPointScale_.LocalArea.Y;
+            Console.WriteLine(pixdist.ToString());
+            int sizenew = pixdist + resizetest;
             if (zoom < zoomMinOverlay_) sizenew = 0;
             //Console.WriteLine(sizenew.ToString() + " - zoom");
             if(overlayImg_ != null)
             {
-                foreach(GMapMarker marker in overlayImg_.Markers)
+                foreach (GMapMarker marker in overlayImg_.Markers)
                 {
+                    if((string) marker.Tag != "left" && (string)marker.Tag != "right")
                     marker.Size = new Size(sizenew, sizenew);
+                    
                 }
                 
             }
         }
+        public int resizetest = 10;
         public void OverlayWorkingDir()
         {
             //Create list of local files (with paths)
@@ -72,7 +87,7 @@ namespace FTP_Image_Browser
 
         }
         double zoomMaxOverlay_ = 20;
-        double zoomMinOverlay_ = 12;
+        double zoomMinOverlay_ = 5;
         GMapOverlay overlayImg_;
 
         // Decoding jpeg files 
@@ -87,23 +102,6 @@ namespace FTP_Image_Browser
             public float planeAltitude;
             public float planeLatitude;
             public float planeLongitude;
-
-            /*Int32 latitude;
-            Int32 longtitude;
-            Int32 altitude;
-
-            float speedX;
-            float speedY;
-
-            float roll;
-            float pitch;
-            float yaw;
-
-            float gyroX;
-            float gyroY;
-            float gyroZ;
-
-            char status;*/
         }
         public struct ImageWithData
         {

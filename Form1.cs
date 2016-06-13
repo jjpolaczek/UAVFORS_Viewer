@@ -39,6 +39,7 @@ namespace FTP_Image_Browser
             gMapControl.SetPositionByKeywords("Warsaw, Poland");
             //Initialize image overlay
             GMapOverlay imageOverlay = new GMapOverlay("images");
+            GMapOverlay scaleOverlay = new GMapOverlay("scale");
             gMapControl.Overlays.Add(imageOverlay);
             overlayImg = new Overlay(gMapControl.Overlays[0]);
         }
@@ -54,6 +55,7 @@ namespace FTP_Image_Browser
         }
         private void SyncWorkingDirectoryAsync()
         {
+            if (ftpClient.autoWorking == true) return;
             //start new file synchronization task in background
             BackgroundWorker ftpRequestWorker = new BackgroundWorker();
             ftpRequestWorker.DoWork += new DoWorkEventHandler(ftpClient.DownloadAllWorkingDirWorker);
@@ -71,19 +73,10 @@ namespace FTP_Image_Browser
 
         private void buttonMagic_Click(object sender, EventArgs e)
         {
-            //GMapOverlay imageOverlay = new GMapOverlay("images");
-            //GMapMarkerImage markerTest = new GMapMarkerImage(new GMap.NET.PointLatLng(52.2297700, 21.0117800));
-            //markerTest.Image = newBitmap("..\\..\\images\\folder.png") Bitmap("..\\..\\images\\folder.png");
-            // Bitmap imageTest = new Bitmap("..\\..\\images\\folder2.png");
-
-            // imageTest.SetResolution(10, 10);
-            //GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(52.2297700, 21.0117800), imageTest);
-            // markerTest.Offset = new Point(0, 0);
-            //markerTest.Size = new Size(50, 50);
-            // gMapControl.Overlays[0].Markers.Add(markerTest);
-            //overlayImg.decode(ftpClient.WorkingDir + "/" + treeViewFolders.Nodes[0].Nodes[0].Text);
-            //overlayImg.AddToOverlay(" ");
-           // gMapControl.Overlays.Add(imageOverlay);
+            if(overlayImg.resizetest == 10)
+                overlayImg.resizetest = 0;
+            else if(overlayImg.resizetest == 0 )
+                overlayImg.resizetest = 10;
             gMapControl_OnMapZoomChanged();
         }
         
@@ -183,6 +176,10 @@ namespace FTP_Image_Browser
                     //Clear tree of folders in preparation for files
                     treeViewFolders.Nodes.Clear();
                     treeViewFolders.Nodes.Add(dirSynched);
+                    timerAutoSync_ = new Timer();
+                    timerAutoSync_.Interval = 5000;
+                    timerAutoSync_.Tick += AutoTimerTick;
+                    timerAutoSync_.Start();
                     break;
                 case DialogResult.No:
                     //Start synchronisation
@@ -198,7 +195,10 @@ namespace FTP_Image_Browser
             }
 
         }
-
+        private void AutoTimerTick(object sender, EventArgs e)
+        {
+            SyncWorkingDirectoryAsync();
+        }
         //Menu map handlers//
         private void satelliteToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -250,6 +250,9 @@ namespace FTP_Image_Browser
 
         private void gMapControl_OnMapZoomChanged()
         {
+
+            gMapControl.UpdateMarkerLocalPosition(overlayImg.downPointScale_);
+            gMapControl.UpdateMarkerLocalPosition(overlayImg.upPointScale_);
             overlayImg.ResizeAll(gMapControl.Zoom);
         }
     }

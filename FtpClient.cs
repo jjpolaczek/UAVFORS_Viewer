@@ -80,6 +80,7 @@ namespace FTP_Image_Browser
         }
         public void DownloadAllWorkingDirWorker(object sender, DoWorkEventArgs e)
         {
+            autoWorking = true;
             //Ensure directory existence
             if (!Directory.Exists(WorkingDir))
             {
@@ -115,6 +116,7 @@ namespace FTP_Image_Browser
                 fileDownloaded++;
             }
             (sender as BackgroundWorker).ReportProgress(100, "File Sync completed");
+            autoWorking = false;
             return;
         }
         //Synchronous methods
@@ -231,6 +233,7 @@ namespace FTP_Image_Browser
 
 
         public string WorkingDir { get; set; }
+        public bool autoWorking { get; set; }
         //Server object
         //Default server parameters
         private string serverDomain_ = "srv40.ddns.net";
