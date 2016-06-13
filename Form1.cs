@@ -41,7 +41,8 @@ namespace FTP_Image_Browser
             GMapOverlay imageOverlay = new GMapOverlay("images");
             GMapOverlay scaleOverlay = new GMapOverlay("scale");
             gMapControl.Overlays.Add(imageOverlay);
-            overlayImg = new Overlay(gMapControl.Overlays[0]);
+            gMapControl.Overlays.Add(scaleOverlay);
+            overlayImg = new Overlay(imageOverlay, scaleOverlay, gMapControl);
         }
         private void ListWorkingDirectoryAsync()
         {
@@ -78,6 +79,7 @@ namespace FTP_Image_Browser
             else if(overlayImg.resizetest == 0 )
                 overlayImg.resizetest = 10;
             gMapControl_OnMapZoomChanged();
+            gMapControl.ZoomAndCenterMarkers("images");
         }
         
 
@@ -151,7 +153,7 @@ namespace FTP_Image_Browser
                     treeViewFolders.Nodes[0].Nodes.Add(str);
                 overlayImg.OverlayNew(filesDownloaded);
             }
-            
+            overlayImg.ResizeAll();
 
         }
         //General utility handlers
@@ -250,10 +252,7 @@ namespace FTP_Image_Browser
 
         private void gMapControl_OnMapZoomChanged()
         {
-
-            gMapControl.UpdateMarkerLocalPosition(overlayImg.downPointScale_);
-            gMapControl.UpdateMarkerLocalPosition(overlayImg.upPointScale_);
-            overlayImg.ResizeAll(gMapControl.Zoom);
+            overlayImg.ResizeAll();
         }
     }
 }

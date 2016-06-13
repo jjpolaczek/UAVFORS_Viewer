@@ -70,7 +70,6 @@ namespace FTP_Image_Browser
                 }
             }
 
-
             Console.WriteLine("Directory List Complete, status {0}", response.StatusDescription);
             (sender as BackgroundWorker).ReportProgress(100, "Directory list complete!");
             reader.Close();

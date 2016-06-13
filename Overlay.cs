@@ -15,47 +15,62 @@ namespace FTP_Image_Browser
 {
     class Overlay
     {
-        public Overlay(GMapOverlay overlay)
+        public Overlay(GMapOverlay overlayImg, GMapOverlay overlayZoom, GMapControl gmap)
         {
-            overlayImg_ = overlay;
+            gmap_ = gmap;
+            overlayImg_ = overlayImg;
+            overlayZoom_ = overlayZoom;
             downPointScale_ = new GMarkerGoogle(new GMap.NET.PointLatLng(0.0, 0.0), GMarkerGoogleType.blue_dot);
             downPointScale_.Tag = "left";
             downPointScale_.Size = new Size(0, 0);
             upPointScale_ = new GMarkerGoogle(new GMap.NET.PointLatLng(10.0/111000, 0.0), GMarkerGoogleType.blue_dot);
             upPointScale_.Tag = "right";
             upPointScale_.Size = new Size(0, 0);
-            overlayImg_.Markers.Add(downPointScale_);
-            overlayImg_.Markers.Add(upPointScale_);
+            overlayZoom_.Markers.Add(downPointScale_);
+            overlayZoom_.Markers.Add(upPointScale_);
             //Todo scale variably edepending on latitude
         }
         public GMarkerGoogle downPointScale_, upPointScale_;
         //Overlay handlers:
         //Add image minature to overlay
+        public struct MarkerData
+        {
+            public MarkerData(int x, int y)
+            {
+                baseX = x;
+                baseY = y;
+            }
+            public int baseX;
+            public int baseY;
+        }
         private void AddToOverlay(string filename)
         {
             ImageWithData iwd = decode(filename);
-
+            //Reject no - gps frames
+            if (Math.Abs(iwd.data.targetLongitude) < 0.01)
+                return;
             // imageTest.SetResolution(10, 10);new GMarkerGoogle(new GMap.NET.PointLatLng(52.2297700, 21.0117800), imageTest);
             GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.targetLatitude, iwd.data.targetLongitude), (Bitmap)iwd.image);
             markerTest.Offset = new Point(0, 0);
-           // markerTest.Size = new Size(50, 50);
+            markerTest.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height);
             overlayImg_.Markers.Add(markerTest);
         }
-        public void ResizeAll(double zoom)
+        public void ResizeAll()
         {
+            gmap_.UpdateMarkerLocalPosition(downPointScale_);
+            gmap_.UpdateMarkerLocalPosition(upPointScale_);
             //overlayImg_.OnRender();
             int pixdist = downPointScale_.LocalArea.Y - upPointScale_.LocalArea.Y;
-            Console.WriteLine(pixdist.ToString());
-            int sizenew = pixdist / 2 + resizetest;
-            if (zoom < zoomMinOverlay_) sizenew = 0;
+            int size10m = pixdist + resizetest;
             //Console.WriteLine(sizenew.ToString() + " - zoom");
             if(overlayImg_ != null)
             {
                 foreach (GMapMarker marker in overlayImg_.Markers)
                 {
-                    if((string) marker.Tag != "left" && (string)marker.Tag != "right")
-                    marker.Size = new Size(sizenew, sizenew);
-                    
+                    MarkerData imgParam = (MarkerData)marker.Tag;
+                    double width =  (double)imgParam.baseX / (double) cameraPixelSize_;//width in m
+                    double height = (double)imgParam.baseY / (double)cameraPixelSize_;//height in m
+                    marker.Size = new Size((int) Math.Round(10.0 * width * size10m) , (int)Math.Round(10.0 * height * size10m));
                 }
                 
             }
@@ -88,7 +103,8 @@ namespace FTP_Image_Browser
         }
         double zoomMaxOverlay_ = 20;
         double zoomMinOverlay_ = 5;
-        GMapOverlay overlayImg_;
+        GMapOverlay overlayImg_, overlayZoom_;
+        GMapControl gmap_;
 
         // Decoding jpeg files 
         // Added by KŁ 11.06.2016
@@ -139,5 +155,6 @@ namespace FTP_Image_Browser
             return iwd;
         }
         public string WorkingDir { get; set; }
+        private int cameraPixelSize_ = 63;// pix/m
     }
 }
