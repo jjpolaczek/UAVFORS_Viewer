@@ -76,7 +76,7 @@
             this.gMapControl.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.gMapControl.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.gMapControl.ShowTileGridLines = false;
-            this.gMapControl.Size = new System.Drawing.Size(657, 642);
+            this.gMapControl.Size = new System.Drawing.Size(893, 594);
             this.gMapControl.TabIndex = 0;
             this.gMapControl.Zoom = 8D;
             this.gMapControl.OnMapZoomChanged += new GMap.NET.MapZoomChanged(this.gMapControl_OnMapZoomChanged);
@@ -90,7 +90,7 @@
             this.actionsToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1005, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1248, 28);
             this.menuStrip1.TabIndex = 1;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -212,14 +212,14 @@
             // 
             // progressBar
             // 
-            this.progressBar.Location = new System.Drawing.Point(858, 719);
+            this.progressBar.Location = new System.Drawing.Point(1136, 614);
             this.progressBar.Name = "progressBar";
             this.progressBar.Size = new System.Drawing.Size(100, 23);
             this.progressBar.TabIndex = 2;
             // 
             // labelStatus
             // 
-            this.labelStatus.Location = new System.Drawing.Point(635, 719);
+            this.labelStatus.Location = new System.Drawing.Point(928, 614);
             this.labelStatus.Name = "labelStatus";
             this.labelStatus.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.labelStatus.Size = new System.Drawing.Size(202, 23);
@@ -229,7 +229,7 @@
             // 
             // treeViewFolders
             // 
-            this.treeViewFolders.Location = new System.Drawing.Point(668, 43);
+            this.treeViewFolders.Location = new System.Drawing.Point(956, 43);
             this.treeViewFolders.Name = "treeViewFolders";
             this.treeViewFolders.Size = new System.Drawing.Size(264, 144);
             this.treeViewFolders.TabIndex = 4;
@@ -243,7 +243,7 @@
             // 
             // buttonMagic
             // 
-            this.buttonMagic.Location = new System.Drawing.Point(704, 240);
+            this.buttonMagic.Location = new System.Drawing.Point(1145, 221);
             this.buttonMagic.Name = "buttonMagic";
             this.buttonMagic.Size = new System.Drawing.Size(75, 23);
             this.buttonMagic.TabIndex = 5;
@@ -254,7 +254,7 @@
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(1005, 742);
+            this.ClientSize = new System.Drawing.Size(1248, 649);
             this.Controls.Add(this.buttonMagic);
             this.Controls.Add(this.treeViewFolders);
             this.Controls.Add(this.labelStatus);

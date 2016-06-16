@@ -35,13 +35,19 @@ namespace FTP_Image_Browser
         //Add image minature to overlay
         public struct MarkerData
         {
-            public MarkerData(int x, int y)
+            public MarkerData(int x, int y,float yawAngle, float alt,int pixdens)
             {
                 baseX = x;
                 baseY = y;
+                altitude = alt;
+                yaw = yawAngle;
+                pixelDensity = pixdens;//Default value change at initialization
             }
             public int baseX;
             public int baseY;
+            public float altitude;
+            public int pixelDensity;
+            public float yaw;
         }
         private void AddToOverlay(string filename)
         {
@@ -59,7 +65,7 @@ namespace FTP_Image_Browser
             GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.targetLatitude, iwd.data.targetLongitude), (Bitmap)iwd.image);
             //GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.planeLatitude, iwd.data.planeLongitude), (Bitmap)iwd.image);
             markerTest.Offset = new Point(0, 0);
-            markerTest.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height);
+            markerTest.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude, GetPixelDensity(iwd.data.planeAltitude));
             overlayImg_.Markers.Add(markerTest);
         }
         public void ResizeAll()
@@ -75,8 +81,8 @@ namespace FTP_Image_Browser
                 foreach (GMapMarker marker in overlayImg_.Markers)
                 {
                     MarkerData imgParam = (MarkerData)marker.Tag;
-                    double width =  (double)imgParam.baseX / (double) cameraPixelSize_;//width in m
-                    double height = (double)imgParam.baseY / (double)cameraPixelSize_;//height in m
+                    double width =  (double)imgParam.baseX / (double) imgParam.pixelDensity;//width in m
+                    double height = (double)imgParam.baseY / (double) imgParam.pixelDensity;//height in m
                     marker.Size = new Size((int) Math.Round(10.0 * width * size10m) , (int)Math.Round(10.0 * height * size10m));
                 }
                 
@@ -112,7 +118,22 @@ namespace FTP_Image_Browser
         double zoomMinOverlay_ = 5;
         GMapOverlay overlayImg_, overlayZoom_;
         GMapControl gmap_;
-
+        //Gets density of pixels at given altitude
+        public int GetPixelDensity(double altitude)
+        {
+            //Clip altitude to avoid errors on ground
+            if (altitude < 0) altitude = 0;
+            double avgResolution = (1936.0);//pix
+            if (viewAngle_ < 0)
+            {
+                double focalLength = 16;//mm
+                double avgSensorDim = (12.454 + 9.83) / 2;//mm
+                viewAngle_ = 2 * Math.Atan2(avgSensorDim, 2 * focalLength);
+            }
+            double projectedLength = Math.Tan(viewAngle_ / 2) * altitude * 2;
+            if (altitude > 70.0) Console.WriteLine(Math.Round(avgResolution / projectedLength).ToString());
+            return (int)Math.Round(avgResolution / projectedLength);
+        }
         // Decoding jpeg files 
         // Added by KŁ 11.06.2016
         public struct ImageData
@@ -162,6 +183,6 @@ namespace FTP_Image_Browser
             return iwd;
         }
         public string WorkingDir { get; set; }
-        private int cameraPixelSize_ = 63;// pix/m
+        private double viewAngle_ = -1;
     }
 }
