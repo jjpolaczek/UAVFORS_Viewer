@@ -51,7 +51,20 @@
             this.treeViewFolders = new System.Windows.Forms.TreeView();
             this.imageList = new System.Windows.Forms.ImageList(this.components);
             this.buttonMagic = new System.Windows.Forms.Button();
+            this.contextMenuStripMap = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.zoomInMarkersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.performanceCounter1 = new System.Diagnostics.PerformanceCounter();
+            this.trackBarScore = new System.Windows.Forms.TrackBar();
+            this.trackBarScoreMax = new System.Windows.Forms.TrackBar();
+            this.trackBarTime = new System.Windows.Forms.TrackBar();
+            this.trackBarTimeMax = new System.Windows.Forms.TrackBar();
             this.menuStrip1.SuspendLayout();
+            this.contextMenuStripMap.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.performanceCounter1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScore)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreMax)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarTime)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarTimeMax)).BeginInit();
             this.SuspendLayout();
             // 
             // gMapControl
@@ -63,7 +76,7 @@
             this.gMapControl.GrayScaleMode = false;
             this.gMapControl.HelperLineOption = GMap.NET.WindowsForms.HelperLineOptions.DontShow;
             this.gMapControl.LevelsKeepInMemmory = 5;
-            this.gMapControl.Location = new System.Drawing.Point(12, 43);
+            this.gMapControl.Location = new System.Drawing.Point(12, 31);
             this.gMapControl.MarkersEnabled = true;
             this.gMapControl.MaxZoom = 20;
             this.gMapControl.MinZoom = 2;
@@ -76,11 +89,12 @@
             this.gMapControl.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.gMapControl.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.gMapControl.ShowTileGridLines = false;
-            this.gMapControl.Size = new System.Drawing.Size(893, 594);
+            this.gMapControl.Size = new System.Drawing.Size(897, 606);
             this.gMapControl.TabIndex = 0;
             this.gMapControl.Zoom = 8D;
             this.gMapControl.OnMapZoomChanged += new GMap.NET.MapZoomChanged(this.gMapControl_OnMapZoomChanged);
             this.gMapControl.Load += new System.EventHandler(this.Form1_Load);
+            this.gMapControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gMapControl_MouseClick);
             // 
             // menuStrip1
             // 
@@ -229,7 +243,7 @@
             // 
             // treeViewFolders
             // 
-            this.treeViewFolders.Location = new System.Drawing.Point(956, 43);
+            this.treeViewFolders.Location = new System.Drawing.Point(972, 31);
             this.treeViewFolders.Name = "treeViewFolders";
             this.treeViewFolders.Size = new System.Drawing.Size(264, 144);
             this.treeViewFolders.TabIndex = 4;
@@ -243,7 +257,7 @@
             // 
             // buttonMagic
             // 
-            this.buttonMagic.Location = new System.Drawing.Point(1145, 221);
+            this.buttonMagic.Location = new System.Drawing.Point(1161, 191);
             this.buttonMagic.Name = "buttonMagic";
             this.buttonMagic.Size = new System.Drawing.Size(75, 23);
             this.buttonMagic.TabIndex = 5;
@@ -251,10 +265,61 @@
             this.buttonMagic.UseVisualStyleBackColor = true;
             this.buttonMagic.Click += new System.EventHandler(this.buttonMagic_Click);
             // 
+            // contextMenuStripMap
+            // 
+            this.contextMenuStripMap.ImageScalingSize = new System.Drawing.Size(20, 20);
+            this.contextMenuStripMap.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.zoomInMarkersToolStripMenuItem});
+            this.contextMenuStripMap.Name = "contextMenuStrip1";
+            this.contextMenuStripMap.Size = new System.Drawing.Size(197, 30);
+            // 
+            // zoomInMarkersToolStripMenuItem
+            // 
+            this.zoomInMarkersToolStripMenuItem.Name = "zoomInMarkersToolStripMenuItem";
+            this.zoomInMarkersToolStripMenuItem.Size = new System.Drawing.Size(196, 26);
+            this.zoomInMarkersToolStripMenuItem.Text = "Zoom in markers";
+            this.zoomInMarkersToolStripMenuItem.Click += new System.EventHandler(this.zoomInMarkersToolStripMenuItem_Click);
+            // 
+            // trackBarScore
+            // 
+            this.trackBarScore.Location = new System.Drawing.Point(972, 232);
+            this.trackBarScore.Name = "trackBarScore";
+            this.trackBarScore.Size = new System.Drawing.Size(264, 56);
+            this.trackBarScore.TabIndex = 6;
+            // 
+            // trackBarScoreMax
+            // 
+            this.trackBarScoreMax.Location = new System.Drawing.Point(972, 295);
+            this.trackBarScoreMax.Maximum = 1000;
+            this.trackBarScoreMax.Name = "trackBarScoreMax";
+            this.trackBarScoreMax.Size = new System.Drawing.Size(264, 56);
+            this.trackBarScoreMax.TabIndex = 7;
+            this.trackBarScoreMax.TickFrequency = 50;
+            this.trackBarScoreMax.Value = 1000;
+            // 
+            // trackBarTime
+            // 
+            this.trackBarTime.Location = new System.Drawing.Point(972, 406);
+            this.trackBarTime.Name = "trackBarTime";
+            this.trackBarTime.Size = new System.Drawing.Size(264, 56);
+            this.trackBarTime.TabIndex = 8;
+            // 
+            // trackBarTimeMax
+            // 
+            this.trackBarTimeMax.Location = new System.Drawing.Point(972, 471);
+            this.trackBarTimeMax.Name = "trackBarTimeMax";
+            this.trackBarTimeMax.Size = new System.Drawing.Size(264, 56);
+            this.trackBarTimeMax.TabIndex = 9;
+            this.trackBarTimeMax.Value = 10;
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1248, 649);
+            this.Controls.Add(this.trackBarTimeMax);
+            this.Controls.Add(this.trackBarTime);
+            this.Controls.Add(this.trackBarScoreMax);
+            this.Controls.Add(this.trackBarScore);
             this.Controls.Add(this.buttonMagic);
             this.Controls.Add(this.treeViewFolders);
             this.Controls.Add(this.labelStatus);
@@ -266,6 +331,11 @@
             this.Text = "UAVFORS Viewer";
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
+            this.contextMenuStripMap.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScore)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreMax)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarTime)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarTimeMax)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -296,6 +366,13 @@
         private System.Windows.Forms.ToolStripMenuItem roadToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem hybridToolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripMap;
+        private System.Windows.Forms.ToolStripMenuItem zoomInMarkersToolStripMenuItem;
+        private System.Diagnostics.PerformanceCounter performanceCounter1;
+        private System.Windows.Forms.TrackBar trackBarScore;
+        private System.Windows.Forms.TrackBar trackBarScoreMax;
+        private System.Windows.Forms.TrackBar trackBarTime;
+        private System.Windows.Forms.TrackBar trackBarTimeMax;
     }
 }
 

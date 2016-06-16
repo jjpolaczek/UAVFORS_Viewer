@@ -116,7 +116,7 @@ namespace FTP_Image_Browser
         }
         double zoomMaxOverlay_ = 20;
         double zoomMinOverlay_ = 5;
-        GMapOverlay overlayImg_, overlayZoom_;
+        GMapOverlay overlayImg_, overlayZoom_, overlayFilter_;
         GMapControl gmap_;
         //Gets density of pixels at given altitude
         public int GetPixelDensity(double altitude)

@@ -15,6 +15,7 @@ namespace FTP_Image_Browser
 {
     public partial class Form1 : Form
     {
+        
         FtpClient ftpClient;
         Overlay overlayImg;
         public Form1()
@@ -253,6 +254,20 @@ namespace FTP_Image_Browser
         private void gMapControl_OnMapZoomChanged()
         {
             overlayImg.ResizeAll();
+        }
+
+        private void zoomInMarkersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            gMapControl_OnMapZoomChanged();
+            gMapControl.ZoomAndCenterMarkers("images");
+        }
+
+        private void gMapControl_MouseClick(object sender, MouseEventArgs e)
+        {
+            if(e.Button == MouseButtons.Right)
+            {
+                contextMenuStripMap.Show((GMapControl)sender,e.Location);
+            }
         }
     }
 }
