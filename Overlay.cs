@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,19 +7,23 @@ using System.Threading.Tasks;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using System.Windows.Forms;
-using System.IO;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Reflection;
 using System.Reflection.Emit;
+using System.ComponentModel;
+
 namespace FTP_Image_Browser
 {
     class Overlay
     {
-        public Overlay(GMapOverlay overlayImg, GMapOverlay overlayZoom, GMapControl gmap)
+        //There are two structures - OverlayFilter for filtered images and collection of iwd - image with data in RAM
+        //On each update AddToOverlay is called where iwd is added to collection and filtered with current filters
+        //In case of global filter change a background worker is called to iterate data and filter it once again
+        public Overlay(GMapOverlay overlayDisplay, GMapOverlay overlayZoom, GMapControl gmap)
         {
             gmap_ = gmap;
-            overlayImg_ = overlayImg;
+            overlayImg_ = overlayDisplay;
             overlayZoom_ = overlayZoom;
             downPointScale_ = new GMarkerGoogle(new GMap.NET.PointLatLng(0.0, 0.0), GMarkerGoogleType.blue_dot);
             downPointScale_.Tag = "left";
@@ -28,11 +33,12 @@ namespace FTP_Image_Browser
             upPointScale_.Size = new Size(0, 0);
             overlayZoom_.Markers.Add(downPointScale_);
             overlayZoom_.Markers.Add(upPointScale_);
-            //Todo scale variably edepending on latitude
+            imageCollection_ = new List<ImageWithData>();
+            imageFilters_ = new MarkerFilters(1000, 0, -1, 0);
         }
-        public GMarkerGoogle downPointScale_, upPointScale_;
-        //Overlay handlers:
-        //Add image minature to overlay
+        //Markers for scaling the images
+        private GMarkerGoogle downPointScale_, upPointScale_;
+
         public struct MarkerData
         {
             public MarkerData(int x, int y,float yawAngle, float alt,int pixdens)
@@ -49,24 +55,31 @@ namespace FTP_Image_Browser
             public int pixelDensity;
             public float yaw;
         }
-        private void AddToOverlay(string filename)
+        public struct MarkerFilters
         {
-            ImageWithData iwd = decode(filename);
-            //Reject no - gps frames
-            if (Math.Abs(iwd.data.targetLongitude) < 0.01)
-                return;
-
-           
-            if(Math.Abs(iwd.data.planeLatitude) > 90.0 || Math.Abs(iwd.data.planeLongitude) > 180.0)
+            //-1 roimax means infinite
+            public MarkerFilters(int scoremax, int scoremin, int roimax, int roimin)
             {
-                Console.WriteLine("Invalid coordinates");
-                return;
+                scoreMax = scoremax;
+                scoreMin = scoremin;
+                timeMax = roimax;
+                timeMin = roimin;
             }
-            GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.targetLatitude, iwd.data.targetLongitude), (Bitmap)iwd.image);
-            //GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.planeLatitude, iwd.data.planeLongitude), (Bitmap)iwd.image);
-            markerTest.Offset = new Point(0, 0);
-            markerTest.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude, GetPixelDensity(iwd.data.planeAltitude));
-            overlayImg_.Markers.Add(markerTest);
+            public int scoreMax, scoreMin;
+            public int timeMax, timeMin;
+        }
+        //Overlay handlers:
+        //Add image minature to overlay
+        public void SetFilters(MarkerFilters filters)
+        {
+            imageFilters_ = filters;
+            GMapOverlay newOverlay = new GMapOverlay();
+            //Iterate over range of roi count
+            overlayImg_.Clear();
+            Parallel.ForEach(imageCollection_, (image) =>
+             {
+                 AddToOverlay(image);
+             });
         }
         public void ResizeAll()
         {
@@ -74,7 +87,7 @@ namespace FTP_Image_Browser
             gmap_.UpdateMarkerLocalPosition(upPointScale_);
             //overlayImg_.OnRender();
             int pixdist = downPointScale_.LocalArea.Y - upPointScale_.LocalArea.Y;
-            int size10m = pixdist + resizetest;
+            int size10m = pixdist;
             //Console.WriteLine(sizenew.ToString() + " - zoom");
             if(overlayImg_ != null)
             {
@@ -88,7 +101,6 @@ namespace FTP_Image_Browser
                 
             }
         }
-        public int resizetest = 10;
         public void OverlayWorkingDir()
         {
             //Create list of local files (with paths)
@@ -96,11 +108,11 @@ namespace FTP_Image_Browser
             if (newImg == null) return;
             int imagesTotal = newImg.Count();
             int imageCurrent = 1;
-            foreach (string file in newImg)
+            Parallel.ForEach(newImg, (file) =>
             {
                 AddToOverlay(file);
                 imageCurrent++;
-            }
+            });
         }
         public void OverlayNew(string[] newImg)
         {
@@ -112,12 +124,91 @@ namespace FTP_Image_Browser
                 AddToOverlay(WorkingDir + "/" + file);
                 imageCurrent++;
             }
-
         }
-        double zoomMaxOverlay_ = 20;
-        double zoomMinOverlay_ = 5;
-        GMapOverlay overlayImg_, overlayZoom_, overlayFilter_;
+        private void AddToOverlay(ImageWithData iwd)
+        {
+            //Reject no - gps frames
+            if (Math.Abs(iwd.data.targetLongitude) < 0.01)
+                return;
+
+
+            if (Math.Abs(iwd.data.planeLatitude) > 90.0 || Math.Abs(iwd.data.planeLongitude) > 180.0)
+            {
+                Console.WriteLine("Invalid coordinates");
+                return;
+            }
+            //verify filters
+            //Filter score
+            if (iwd.data.score > imageFilters_.scoreMax || iwd.data.score < imageFilters_.scoreMin)
+                return;
+            if (iwd.data.time < imageFilters_.timeMin)
+                return;
+            if (imageFilters_.timeMax != -1)
+            {
+                //infinite rois
+                if (iwd.data.time > imageFilters_.timeMax)
+                    return;
+            }
+            GMarkerGoogle marker = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.targetLatitude, iwd.data.targetLongitude), (Bitmap)iwd.image);
+            //GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.planeLatitude, iwd.data.planeLongitude), (Bitmap)iwd.image);
+            marker.Offset = new Point(0, 0);
+            marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude, GetPixelDensity(iwd.data.planeAltitude));
+            lock (overlayImgLock_)
+            {
+                overlayImg_.Markers.Add(marker);
+            }
+        }
+        
+        private void AddToOverlay(string filename)
+        {
+            ImageWithData iwd = decode(filename);
+            //Reject no - gps frames
+            if (Math.Abs(iwd.data.targetLongitude) < 0.01)
+                return;
+
+
+            if (Math.Abs(iwd.data.planeLatitude) > 90.0 || Math.Abs(iwd.data.planeLongitude) > 180.0)
+            {
+                Console.WriteLine("Invalid coordinates");
+                return;
+            }
+            //Add to general image collection
+            lock(imageCollectionLock_)
+            {
+                imageCollection_.Add(iwd);
+                //Update collection limits//
+                if (timeRoiMin_ == 0) timeRoiMin_ = iwd.data.time;
+                if (iwd.data.time < timeRoiMin_) timeRoiMin_ = iwd.data.time;
+                if (iwd.data.time > timeRoiMax_) timeRoiMax_ = iwd.data.time;
+            }
+            //verify filters
+            //Filter score
+            if (iwd.data.score > imageFilters_.scoreMax || iwd.data.score < imageFilters_.scoreMin)
+                return;
+            if (iwd.data.time < imageFilters_.timeMin)
+                return;
+            if(imageFilters_.timeMax != -1)
+            {
+                //infinite rois
+                if (iwd.data.time > imageFilters_.timeMax)
+                    return;
+            }
+            GMarkerGoogle marker = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.targetLatitude, iwd.data.targetLongitude), (Bitmap)iwd.image);
+            //GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.planeLatitude, iwd.data.planeLongitude), (Bitmap)iwd.image);
+            marker.Offset = new Point(0, 0);
+            marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude, GetPixelDensity(iwd.data.planeAltitude));
+            lock(overlayImgLock_)
+            {
+                overlayImg_.Markers.Add(marker);
+            }
+        }
+        Object overlayImgLock_ = new Object();
+        GMapOverlay overlayImg_, overlayZoom_;
         GMapControl gmap_;
+        Object imageCollectionLock_ = new Object();
+        List<ImageWithData> imageCollection_;
+        public MarkerFilters imageFilters_;
+        public uint timeRoiMin_ = 0, timeRoiMax_ = 1;
         //Gets density of pixels at given altitude
         public int GetPixelDensity(double altitude)
         {
@@ -131,7 +222,6 @@ namespace FTP_Image_Browser
                 viewAngle_ = 2 * Math.Atan2(avgSensorDim, 2 * focalLength);
             }
             double projectedLength = Math.Tan(viewAngle_ / 2) * altitude * 2;
-            if (altitude > 70.0) Console.WriteLine(Math.Round(avgResolution / projectedLength).ToString());
             return (int)Math.Round(avgResolution / projectedLength);
         }
         // Decoding jpeg files 
@@ -175,8 +265,6 @@ namespace FTP_Image_Browser
             dataStructure = (ImageData)Marshal.PtrToStructure(ptr, dataStructure.GetType());
             Marshal.FreeHGlobal(ptr);
             ImageWithData iwd = new ImageWithData();
-
-
             iwd.image = Image.FromFile(filename);
             iwd.data = dataStructure;
 

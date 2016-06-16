@@ -75,18 +75,25 @@ namespace FTP_Image_Browser
 
         private void buttonMagic_Click(object sender, EventArgs e)
         {
-            if(overlayImg.resizetest == 10)
-                overlayImg.resizetest = 0;
-            else if(overlayImg.resizetest == 0 )
-                overlayImg.resizetest = 10;
-            gMapControl_OnMapZoomChanged();
-            gMapControl.ZoomAndCenterMarkers("images");
+            //if(overlayImg.resizetest == 10)
+            //    overlayImg.resizetest = 0;
+            //else if(overlayImg.resizetest == 0 )
+            //    overlayImg.resizetest = 10;
+            //gMapControl_OnMapZoomChanged();
+            //gMapControl.ZoomAndCenterMarkers("images");
+           // overlayImg.SetFiltersWorker(new object(), new DoWorkEventArgs(new Overlay.MarkerFilters(1000, 0, 1400000, 1300000)));
         }
         
 
 
         //event handlers for specific tasks
-
+        private void SliderChanged(object sender, EventArgs e)
+        {
+            if(trackBarScoreMax.Maximum != trackBarScoreMax.Value)
+                overlayImg.SetFilters(new Overlay.MarkerFilters(trackBarScoreMax.Value, trackBarScore.Value, trackBarTimeMax.Value, trackBarTime.Value));
+            else
+                overlayImg.SetFilters(new Overlay.MarkerFilters(trackBarScoreMax.Value, trackBarScore.Value, -1, trackBarTime.Value));
+        }
         //Handle directory list return value
         private void FtpListFolders(object sender, RunWorkerCompletedEventArgs e)
         {
@@ -146,6 +153,8 @@ namespace FTP_Image_Browser
                     treeViewFolders.Nodes[0].Nodes.Add(str);
                 overlayImg.WorkingDir = ftpClient.WorkingDir;
                 overlayImg.OverlayWorkingDir();
+                trackBarTime.TickFrequency = 10000;
+                trackBarTimeMax.TickFrequency = 10000;
             }
             else if(connectionState_ == FtpConnectionState.Synchronised)
             {
@@ -155,7 +164,15 @@ namespace FTP_Image_Browser
                 overlayImg.OverlayNew(filesDownloaded);
             }
             overlayImg.ResizeAll();
-
+            //Update sliders//
+            trackBarTime.Minimum = (int)overlayImg.timeRoiMin_;
+            trackBarTime.Maximum = (int)overlayImg.timeRoiMax_;
+            if (trackBarTime.Value < trackBarTime.Minimum) trackBarTime.Value = trackBarTime.Minimum;
+            trackBarTimeMax.Minimum = (int)overlayImg.timeRoiMin_;
+            trackBarTimeMax.Maximum = (int)overlayImg.timeRoiMax_;
+            if (trackBarTimeMax.Value < trackBarTimeMax.Minimum) trackBarTimeMax.Value = trackBarTimeMax.Minimum;
+            if (overlayImg.imageFilters_.timeMax == -1) trackBarTimeMax.Value = trackBarTimeMax.Maximum;
+                  
         }
         //General utility handlers
         private void progressChanged(object sender, ProgressChangedEventArgs e)

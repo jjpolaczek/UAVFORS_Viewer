@@ -283,9 +283,12 @@
             // trackBarScore
             // 
             this.trackBarScore.Location = new System.Drawing.Point(972, 232);
+            this.trackBarScore.Maximum = 1000;
             this.trackBarScore.Name = "trackBarScore";
             this.trackBarScore.Size = new System.Drawing.Size(264, 56);
             this.trackBarScore.TabIndex = 6;
+            this.trackBarScore.TickFrequency = 50;
+            this.trackBarScore.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
             // trackBarScoreMax
             // 
@@ -296,21 +299,26 @@
             this.trackBarScoreMax.TabIndex = 7;
             this.trackBarScoreMax.TickFrequency = 50;
             this.trackBarScoreMax.Value = 1000;
+            this.trackBarScoreMax.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
             // trackBarTime
             // 
             this.trackBarTime.Location = new System.Drawing.Point(972, 406);
+            this.trackBarTime.Maximum = 1;
             this.trackBarTime.Name = "trackBarTime";
             this.trackBarTime.Size = new System.Drawing.Size(264, 56);
             this.trackBarTime.TabIndex = 8;
+            this.trackBarTime.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
             // trackBarTimeMax
             // 
             this.trackBarTimeMax.Location = new System.Drawing.Point(972, 471);
+            this.trackBarTimeMax.Maximum = 1;
             this.trackBarTimeMax.Name = "trackBarTimeMax";
             this.trackBarTimeMax.Size = new System.Drawing.Size(264, 56);
             this.trackBarTimeMax.TabIndex = 9;
-            this.trackBarTimeMax.Value = 10;
+            this.trackBarTimeMax.Value = 1;
+            this.trackBarTimeMax.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
             // Form1
             // 
