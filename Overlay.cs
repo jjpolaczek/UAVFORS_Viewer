@@ -49,8 +49,15 @@ namespace FTP_Image_Browser
             //Reject no - gps frames
             if (Math.Abs(iwd.data.targetLongitude) < 0.01)
                 return;
-            // imageTest.SetResolution(10, 10);new GMarkerGoogle(new GMap.NET.PointLatLng(52.2297700, 21.0117800), imageTest);
+
+           
+            if(Math.Abs(iwd.data.planeLatitude) > 90.0 || Math.Abs(iwd.data.planeLongitude) > 180.0)
+            {
+                Console.WriteLine("Invalid coordinates");
+                return;
+            }
             GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.targetLatitude, iwd.data.targetLongitude), (Bitmap)iwd.image);
+            //GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.planeLatitude, iwd.data.planeLongitude), (Bitmap)iwd.image);
             markerTest.Offset = new Point(0, 0);
             markerTest.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height);
             overlayImg_.Markers.Add(markerTest);
@@ -111,13 +118,14 @@ namespace FTP_Image_Browser
         public struct ImageData
         {
             public UInt32 time;
-
+            public UInt32 score;
             public float targetLatitude;
             public float targetLongitude;
 
             public float planeAltitude;
             public float planeLatitude;
             public float planeLongitude;
+            public float planeYaw;
         }
         public struct ImageWithData
         {
@@ -145,7 +153,6 @@ namespace FTP_Image_Browser
 
             dataStructure = (ImageData)Marshal.PtrToStructure(ptr, dataStructure.GetType());
             Marshal.FreeHGlobal(ptr);
-
             ImageWithData iwd = new ImageWithData();
 
 
