@@ -34,7 +34,7 @@ namespace FTP_Image_Browser
             overlayZoom_.Markers.Add(downPointScale_);
             overlayZoom_.Markers.Add(upPointScale_);
             imageCollection_ = new List<ImageWithData>();
-            imageFilters_ = new MarkerFilters(100, 0, -1, 0);
+            imageFilters_ = new MarkerFilters(600, 0, -1, 0);
         }
         //Markers for scaling the images
         private GMarkerGoogle downPointScale_, upPointScale_;

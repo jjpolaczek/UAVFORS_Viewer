@@ -306,22 +306,22 @@
             // trackBarScore
             // 
             this.trackBarScore.Location = new System.Drawing.Point(972, 232);
-            this.trackBarScore.Maximum = 100;
+            this.trackBarScore.Maximum = 600;
             this.trackBarScore.Name = "trackBarScore";
             this.trackBarScore.Size = new System.Drawing.Size(264, 56);
             this.trackBarScore.TabIndex = 6;
-            this.trackBarScore.TickFrequency = 5;
+            this.trackBarScore.TickFrequency = 10;
             this.trackBarScore.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
             // trackBarScoreMax
             // 
             this.trackBarScoreMax.Location = new System.Drawing.Point(972, 295);
-            this.trackBarScoreMax.Maximum = 100;
+            this.trackBarScoreMax.Maximum = 600;
             this.trackBarScoreMax.Name = "trackBarScoreMax";
             this.trackBarScoreMax.Size = new System.Drawing.Size(264, 56);
             this.trackBarScoreMax.TabIndex = 7;
-            this.trackBarScoreMax.TickFrequency = 5;
-            this.trackBarScoreMax.Value = 100;
+            this.trackBarScoreMax.TickFrequency = 10;
+            this.trackBarScoreMax.Value = 600;
             this.trackBarScoreMax.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
             // trackBarTime
