@@ -29,6 +29,7 @@ namespace FTP_Image_Browser
         }
         public void FtpListDirectoryWorker(object sender, DoWorkEventArgs e)
         {
+            autoWorking = true;
             string remoteDir = (string)e.Argument;
             (sender as BackgroundWorker).ReportProgress(0, "Connecting to Server");
             // Get the object used to communicate with the server.
@@ -48,6 +49,7 @@ namespace FTP_Image_Browser
                 System.Console.WriteLine("Server not responding, message: " + exception.Message);
                 MessageBox.Show("Cannot connect to remote server \r\nDescription:" + exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 e.Result = null;
+                autoWorking = false;
                 return;
             }
             (sender as BackgroundWorker).ReportProgress(75, "Directory listing recieved, processing");
@@ -75,6 +77,7 @@ namespace FTP_Image_Browser
             reader.Close();
             response.Close();
             e.Result = dirListing;
+            autoWorking = false;
             return;
         }
         public void DownloadAllWorkingDirWorker(object sender, DoWorkEventArgs e)

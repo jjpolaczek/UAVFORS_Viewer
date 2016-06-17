@@ -34,7 +34,7 @@ namespace FTP_Image_Browser
             overlayZoom_.Markers.Add(downPointScale_);
             overlayZoom_.Markers.Add(upPointScale_);
             imageCollection_ = new List<ImageWithData>();
-            imageFilters_ = new MarkerFilters(1000, 0, -1, 0);
+            imageFilters_ = new MarkerFilters(100, 0, -1, 0);
         }
         //Markers for scaling the images
         private GMarkerGoogle downPointScale_, upPointScale_;
@@ -81,6 +81,21 @@ namespace FTP_Image_Browser
                  AddToOverlay(image);
              });
         }
+        public double AddPOI(double lat, double lng)
+        {
+            overlayZoom_.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(lat,lng), GMarkerGoogleType.blue_dot));
+            //Calculate total distance on map in meters//
+            double distance = 0;
+            if(overlayZoom_.Markers.Count > 3)
+            {
+                for(int i = 2; i < overlayZoom_.Markers.Count; ++i)
+                {
+                    //overlayZoom_.Routes.Add(new)
+                }
+            }
+            return distance;
+        }
+        public int sizeSkew_ = 0;
         public void ResizeAll()
         {
             gmap_.UpdateMarkerLocalPosition(downPointScale_);
@@ -96,7 +111,7 @@ namespace FTP_Image_Browser
                     MarkerData imgParam = (MarkerData)marker.Tag;
                     double width =  (double)imgParam.baseX / (double) imgParam.pixelDensity;//width in m
                     double height = (double)imgParam.baseY / (double) imgParam.pixelDensity;//height in m
-                    marker.Size = new Size((int) Math.Round(10.0 * width * size10m) , (int)Math.Round(10.0 * height * size10m));
+                    marker.Size = new Size((int) Math.Round(10.0 * width * size10m + +sizeSkew_) , (int)Math.Round(10.0 * height * size10m +sizeSkew_));
                 }
                 
             }

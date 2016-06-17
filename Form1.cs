@@ -47,6 +47,7 @@ namespace FTP_Image_Browser
         }
         private void ListWorkingDirectoryAsync()
         {
+            if (ftpClient.autoWorking == true) return;
             //start new list directory task in background
             BackgroundWorker ftpRequestWorker = new BackgroundWorker();
             ftpRequestWorker.DoWork += new DoWorkEventHandler(ftpClient.FtpListDirectoryWorker);
@@ -75,10 +76,10 @@ namespace FTP_Image_Browser
 
         private void buttonMagic_Click(object sender, EventArgs e)
         {
-            //if(overlayImg.resizetest == 10)
-            //    overlayImg.resizetest = 0;
-            //else if(overlayImg.resizetest == 0 )
-            //    overlayImg.resizetest = 10;
+            if(overlayImg.sizeSkew_ == 10)
+                   overlayImg.sizeSkew_ = 0;
+            else if(overlayImg.sizeSkew_ == 0 )
+                overlayImg.sizeSkew_ = 10;
             //gMapControl_OnMapZoomChanged();
             //gMapControl.ZoomAndCenterMarkers("images");
            // overlayImg.SetFiltersWorker(new object(), new DoWorkEventArgs(new Overlay.MarkerFilters(1000, 0, 1400000, 1300000)));
@@ -278,12 +279,61 @@ namespace FTP_Image_Browser
             gMapControl_OnMapZoomChanged();
             gMapControl.ZoomAndCenterMarkers("images");
         }
+        private void addPOIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
 
+            double X = gMapControl.FromLocalToLatLng(locationTemp_.X, locationTemp_.Y).Lng;
+            double Y = gMapControl.FromLocalToLatLng(locationTemp_.X, locationTemp_.Y).Lat;
+            string longitude = X.ToString("#.0000000");
+            string latitude = Y.ToString("#.0000000");
+            
+            
+        }
+        private void clearPOIToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            if(gMapControl.Overlays[1].Markers.Count > 2)
+            {
+                //Clear additional markers and distance calculation
+                for(int i = 2; i < gMapControl.Overlays[1].Markers.Count; ++i)
+                {
+                    gMapControl.Overlays[1].Markers.RemoveAt(2);
+                }
+            }
+        }
         private void gMapControl_MouseClick(object sender, MouseEventArgs e)
         {
             if(e.Button == MouseButtons.Right)
             {
+                locationTemp_ = e.Location;
                 contextMenuStripMap.Show((GMapControl)sender,e.Location);
+            }
+            else if(e.Button == MouseButtons.Left)
+            {
+                double X = gMapControl.FromLocalToLatLng(e.X, e.Y).Lng;
+                double Y = gMapControl.FromLocalToLatLng(e.X, e.Y).Lat;
+                string longitude = X.ToString("#.0000000");
+                string latitude = Y.ToString("#.0000000");
+                labelLonLatch.Text = longitude;
+                labelLatLatch.Text = latitude;
+            }
+        }
+        private Point locationTemp_;
+        private void gMapControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            double X = gMapControl.FromLocalToLatLng(e.X, e.Y).Lng;
+            double Y = gMapControl.FromLocalToLatLng(e.X, e.Y).Lat;
+            string longitude = X.ToString("#.0000000");
+            string latitude = Y.ToString("#.0000000");
+            labelLongitude.Text = longitude;
+            labelLatitude.Text = latitude;
+        }
+
+        private void buttonRefresh_Click(object sender, EventArgs e)
+        {
+            if(connectionState_ == FtpConnectionState.FolderListing)
+            {
+                treeViewFolders.Nodes.Clear();
+                ListWorkingDirectoryAsync();
             }
         }
     }

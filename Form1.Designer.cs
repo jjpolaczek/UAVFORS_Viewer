@@ -53,14 +53,20 @@
             this.buttonMagic = new System.Windows.Forms.Button();
             this.contextMenuStripMap = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.zoomInMarkersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.performanceCounter1 = new System.Diagnostics.PerformanceCounter();
+            this.addPOIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.clearPOIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.trackBarScore = new System.Windows.Forms.TrackBar();
             this.trackBarScoreMax = new System.Windows.Forms.TrackBar();
             this.trackBarTime = new System.Windows.Forms.TrackBar();
             this.trackBarTimeMax = new System.Windows.Forms.TrackBar();
+            this.labelLatitude = new System.Windows.Forms.Label();
+            this.labelLongitude = new System.Windows.Forms.Label();
+            this.label1 = new System.Windows.Forms.Label();
+            this.labelLatLatch = new System.Windows.Forms.Label();
+            this.labelLonLatch = new System.Windows.Forms.Label();
+            this.buttonRefresh = new System.Windows.Forms.Button();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStripMap.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.performanceCounter1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarScore)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarTime)).BeginInit();
@@ -89,12 +95,13 @@
             this.gMapControl.ScaleMode = GMap.NET.WindowsForms.ScaleModes.Integer;
             this.gMapControl.SelectedAreaFillColor = System.Drawing.Color.FromArgb(((int)(((byte)(33)))), ((int)(((byte)(65)))), ((int)(((byte)(105)))), ((int)(((byte)(225)))));
             this.gMapControl.ShowTileGridLines = false;
-            this.gMapControl.Size = new System.Drawing.Size(897, 606);
+            this.gMapControl.Size = new System.Drawing.Size(902, 582);
             this.gMapControl.TabIndex = 0;
             this.gMapControl.Zoom = 8D;
             this.gMapControl.OnMapZoomChanged += new GMap.NET.MapZoomChanged(this.gMapControl_OnMapZoomChanged);
             this.gMapControl.Load += new System.EventHandler(this.Form1_Load);
             this.gMapControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gMapControl_MouseClick);
+            this.gMapControl.MouseMove += new System.Windows.Forms.MouseEventHandler(this.gMapControl_MouseMove);
             // 
             // menuStrip1
             // 
@@ -269,9 +276,11 @@
             // 
             this.contextMenuStripMap.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStripMap.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.zoomInMarkersToolStripMenuItem});
+            this.zoomInMarkersToolStripMenuItem,
+            this.addPOIToolStripMenuItem,
+            this.clearPOIToolStripMenuItem});
             this.contextMenuStripMap.Name = "contextMenuStrip1";
-            this.contextMenuStripMap.Size = new System.Drawing.Size(197, 30);
+            this.contextMenuStripMap.Size = new System.Drawing.Size(197, 82);
             // 
             // zoomInMarkersToolStripMenuItem
             // 
@@ -280,25 +289,39 @@
             this.zoomInMarkersToolStripMenuItem.Text = "Zoom in markers";
             this.zoomInMarkersToolStripMenuItem.Click += new System.EventHandler(this.zoomInMarkersToolStripMenuItem_Click);
             // 
+            // addPOIToolStripMenuItem
+            // 
+            this.addPOIToolStripMenuItem.Name = "addPOIToolStripMenuItem";
+            this.addPOIToolStripMenuItem.Size = new System.Drawing.Size(196, 26);
+            this.addPOIToolStripMenuItem.Text = "Add POI";
+            this.addPOIToolStripMenuItem.Click += new System.EventHandler(this.addPOIToolStripMenuItem_Click);
+            // 
+            // clearPOIToolStripMenuItem
+            // 
+            this.clearPOIToolStripMenuItem.Name = "clearPOIToolStripMenuItem";
+            this.clearPOIToolStripMenuItem.Size = new System.Drawing.Size(196, 26);
+            this.clearPOIToolStripMenuItem.Text = "Clear POI";
+            this.clearPOIToolStripMenuItem.Click += new System.EventHandler(this.clearPOIToolStripMenuItem_Click);
+            // 
             // trackBarScore
             // 
             this.trackBarScore.Location = new System.Drawing.Point(972, 232);
-            this.trackBarScore.Maximum = 1000;
+            this.trackBarScore.Maximum = 100;
             this.trackBarScore.Name = "trackBarScore";
             this.trackBarScore.Size = new System.Drawing.Size(264, 56);
             this.trackBarScore.TabIndex = 6;
-            this.trackBarScore.TickFrequency = 50;
+            this.trackBarScore.TickFrequency = 5;
             this.trackBarScore.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
             // trackBarScoreMax
             // 
             this.trackBarScoreMax.Location = new System.Drawing.Point(972, 295);
-            this.trackBarScoreMax.Maximum = 1000;
+            this.trackBarScoreMax.Maximum = 100;
             this.trackBarScoreMax.Name = "trackBarScoreMax";
             this.trackBarScoreMax.Size = new System.Drawing.Size(264, 56);
             this.trackBarScoreMax.TabIndex = 7;
-            this.trackBarScoreMax.TickFrequency = 50;
-            this.trackBarScoreMax.Value = 1000;
+            this.trackBarScoreMax.TickFrequency = 5;
+            this.trackBarScoreMax.Value = 100;
             this.trackBarScoreMax.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
             // trackBarTime
@@ -320,10 +343,70 @@
             this.trackBarTimeMax.Value = 1;
             this.trackBarTimeMax.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
+            // labelLatitude
+            // 
+            this.labelLatitude.AutoSize = true;
+            this.labelLatitude.Location = new System.Drawing.Point(76, 623);
+            this.labelLatitude.Name = "labelLatitude";
+            this.labelLatitude.Size = new System.Drawing.Size(89, 17);
+            this.labelLatitude.TabIndex = 10;
+            this.labelLatitude.Text = "labelLatitude";
+            // 
+            // labelLongitude
+            // 
+            this.labelLongitude.AutoSize = true;
+            this.labelLongitude.Location = new System.Drawing.Point(154, 623);
+            this.labelLongitude.Name = "labelLongitude";
+            this.labelLongitude.Size = new System.Drawing.Size(101, 17);
+            this.labelLongitude.TabIndex = 11;
+            this.labelLongitude.Text = "labelLongitude";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(12, 623);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(88, 17);
+            this.label1.TabIndex = 12;
+            this.label1.Text = "Coordinates:";
+            // 
+            // labelLatLatch
+            // 
+            this.labelLatLatch.Location = new System.Drawing.Point(755, 623);
+            this.labelLatLatch.Name = "labelLatLatch";
+            this.labelLatLatch.Size = new System.Drawing.Size(75, 17);
+            this.labelLatLatch.TabIndex = 0;
+            this.labelLatLatch.Text = "Click map";
+            // 
+            // labelLonLatch
+            // 
+            this.labelLonLatch.AutoSize = true;
+            this.labelLonLatch.Location = new System.Drawing.Point(836, 623);
+            this.labelLonLatch.Name = "labelLonLatch";
+            this.labelLonLatch.Size = new System.Drawing.Size(68, 17);
+            this.labelLonLatch.TabIndex = 13;
+            this.labelLonLatch.Text = "Click map";
+            // 
+            // buttonRefresh
+            // 
+            this.buttonRefresh.Location = new System.Drawing.Point(1050, 191);
+            this.buttonRefresh.Name = "buttonRefresh";
+            this.buttonRefresh.Size = new System.Drawing.Size(75, 23);
+            this.buttonRefresh.TabIndex = 14;
+            this.buttonRefresh.Text = "Refresh";
+            this.buttonRefresh.UseVisualStyleBackColor = true;
+            this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1248, 649);
+            this.Controls.Add(this.buttonRefresh);
+            this.Controls.Add(this.labelLonLatch);
+            this.Controls.Add(this.labelLatLatch);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.labelLongitude);
+            this.Controls.Add(this.labelLatitude);
             this.Controls.Add(this.trackBarTimeMax);
             this.Controls.Add(this.trackBarTime);
             this.Controls.Add(this.trackBarScoreMax);
@@ -376,11 +459,18 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripMap;
         private System.Windows.Forms.ToolStripMenuItem zoomInMarkersToolStripMenuItem;
-        private System.Diagnostics.PerformanceCounter performanceCounter1;
         private System.Windows.Forms.TrackBar trackBarScore;
         private System.Windows.Forms.TrackBar trackBarScoreMax;
         private System.Windows.Forms.TrackBar trackBarTime;
         private System.Windows.Forms.TrackBar trackBarTimeMax;
+        private System.Windows.Forms.Label labelLatitude;
+        private System.Windows.Forms.Label labelLongitude;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelLatLatch;
+        private System.Windows.Forms.Label labelLonLatch;
+        private System.Windows.Forms.ToolStripMenuItem addPOIToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem clearPOIToolStripMenuItem;
+        private System.Windows.Forms.Button buttonRefresh;
     }
 }
 
