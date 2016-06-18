@@ -65,6 +65,9 @@
             this.labelLatLatch = new System.Windows.Forms.Label();
             this.labelLonLatch = new System.Windows.Forms.Label();
             this.buttonRefresh = new System.Windows.Forms.Button();
+            this.labelUTMN = new System.Windows.Forms.Label();
+            this.labelUTME = new System.Windows.Forms.Label();
+            this.labelUTMzone = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStripMap.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarScore)).BeginInit();
@@ -98,6 +101,7 @@
             this.gMapControl.Size = new System.Drawing.Size(902, 582);
             this.gMapControl.TabIndex = 0;
             this.gMapControl.Zoom = 8D;
+            this.gMapControl.OnMarkerClick += new GMap.NET.WindowsForms.MarkerClick(this.gMapControl_OnMarkerClick);
             this.gMapControl.OnMapZoomChanged += new GMap.NET.MapZoomChanged(this.gMapControl_OnMapZoomChanged);
             this.gMapControl.Load += new System.EventHandler(this.Form1_Load);
             this.gMapControl.MouseClick += new System.Windows.Forms.MouseEventHandler(this.gMapControl_MouseClick);
@@ -372,7 +376,7 @@
             // 
             // labelLatLatch
             // 
-            this.labelLatLatch.Location = new System.Drawing.Point(755, 623);
+            this.labelLatLatch.Location = new System.Drawing.Point(755, 614);
             this.labelLatLatch.Name = "labelLatLatch";
             this.labelLatLatch.Size = new System.Drawing.Size(75, 17);
             this.labelLatLatch.TabIndex = 0;
@@ -381,7 +385,7 @@
             // labelLonLatch
             // 
             this.labelLonLatch.AutoSize = true;
-            this.labelLonLatch.Location = new System.Drawing.Point(836, 623);
+            this.labelLonLatch.Location = new System.Drawing.Point(825, 614);
             this.labelLonLatch.Name = "labelLonLatch";
             this.labelLonLatch.Size = new System.Drawing.Size(68, 17);
             this.labelLonLatch.TabIndex = 13;
@@ -397,10 +401,40 @@
             this.buttonRefresh.UseVisualStyleBackColor = true;
             this.buttonRefresh.Click += new System.EventHandler(this.buttonRefresh_Click);
             // 
+            // labelUTMN
+            // 
+            this.labelUTMN.AutoSize = true;
+            this.labelUTMN.Location = new System.Drawing.Point(755, 635);
+            this.labelUTMN.Name = "labelUTMN";
+            this.labelUTMN.Size = new System.Drawing.Size(52, 17);
+            this.labelUTMN.TabIndex = 15;
+            this.labelUTMN.Text = "UTM N";
+            // 
+            // labelUTME
+            // 
+            this.labelUTME.AutoSize = true;
+            this.labelUTME.Location = new System.Drawing.Point(825, 635);
+            this.labelUTME.Name = "labelUTME";
+            this.labelUTME.Size = new System.Drawing.Size(51, 17);
+            this.labelUTME.TabIndex = 16;
+            this.labelUTME.Text = "UTM E";
+            // 
+            // labelUTMzone
+            // 
+            this.labelUTMzone.AutoSize = true;
+            this.labelUTMzone.Location = new System.Drawing.Point(720, 635);
+            this.labelUTMzone.Name = "labelUTMzone";
+            this.labelUTMzone.Size = new System.Drawing.Size(39, 17);
+            this.labelUTMzone.TabIndex = 17;
+            this.labelUTMzone.Text = "zone";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(1248, 649);
+            this.ClientSize = new System.Drawing.Size(1248, 656);
+            this.Controls.Add(this.labelUTMzone);
+            this.Controls.Add(this.labelUTME);
+            this.Controls.Add(this.labelUTMN);
             this.Controls.Add(this.buttonRefresh);
             this.Controls.Add(this.labelLonLatch);
             this.Controls.Add(this.labelLatLatch);
@@ -471,6 +505,9 @@
         private System.Windows.Forms.ToolStripMenuItem addPOIToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem clearPOIToolStripMenuItem;
         private System.Windows.Forms.Button buttonRefresh;
+        private System.Windows.Forms.Label labelUTMN;
+        private System.Windows.Forms.Label labelUTME;
+        private System.Windows.Forms.Label labelUTMzone;
     }
 }
 

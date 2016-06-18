@@ -315,6 +315,13 @@ namespace FTP_Image_Browser
                 string latitude = Y.ToString("#.0000000");
                 labelLonLatch.Text = longitude;
                 labelLatLatch.Text = latitude;
+
+                double UTMN, UTME;
+                string UTMzone;
+                overlayImg.LatLongtoUTM(Y, X, out UTMN, out UTME, out UTMzone);
+                labelUTME.Text = UTME.ToString("#.00") + "E";
+                labelUTMN.Text = UTMN.ToString("#.00") + "N";
+                labelUTMzone.Text = UTMzone.ToString();
             }
         }
         private Point locationTemp_;
@@ -335,6 +342,36 @@ namespace FTP_Image_Browser
                 treeViewFolders.Nodes.Clear();
                 ListWorkingDirectoryAsync();
             }
+        }
+
+        private void gMapControl_OnMarkerClick(GMapMarker item, MouseEventArgs e)
+        {
+            //Show coordinates and messagebox//
+            double X = gMapControl.FromLocalToLatLng(e.X, e.Y).Lng;
+            double Y = gMapControl.FromLocalToLatLng(e.X, e.Y).Lat;
+            string longitude = X.ToString("#.0000000");
+            string latitude = Y.ToString("#.0000000");
+            labelLonLatch.Text = longitude;
+            labelLatLatch.Text = latitude;
+
+            double UTMN, UTME;
+            string UTMzone;
+            overlayImg.LatLongtoUTM(Y, X, out UTMN, out UTME, out UTMzone);
+            labelUTME.Text = UTME.ToString("#.00") + "E";
+            labelUTMN.Text = UTMN.ToString("#.00") + "N";
+            labelUTMzone.Text = UTMzone.ToString();
+            //MessageBox for downloading//
+            /*
+            DialogResult result = MessageBox.Show("Download corresponding image?", "ROI " , MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if(result == DialogResult.Yes)
+            {
+                ftpClient.RequestImage();
+            }
+            else
+            {
+                return;
+            }
+            */
         }
     }
 }

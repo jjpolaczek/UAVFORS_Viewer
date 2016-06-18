@@ -27,6 +27,15 @@ namespace FTP_Image_Browser
         {
 
         }
+        public void CheckForFullImages()
+        {
+
+        }
+        public void RequestImage(string filename)
+        {
+
+        }
+
         public void FtpListDirectoryWorker(object sender, DoWorkEventArgs e)
         {
             autoWorking = true;
