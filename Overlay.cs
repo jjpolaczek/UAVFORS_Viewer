@@ -34,7 +34,7 @@ namespace FTP_Image_Browser
             overlayZoom_.Markers.Add(downPointScale_);
             overlayZoom_.Markers.Add(upPointScale_);
             imageCollection_ = new List<ImageWithData>();
-            imageFilters_ = new MarkerFilters(600, 0, -1, 0);
+            imageFilters_ = new MarkerFilters(10000, 0, -1, 0);
         }
         //Markers for scaling the images
         private GMarkerGoogle downPointScale_, upPointScale_;
@@ -179,6 +179,8 @@ namespace FTP_Image_Browser
         private void AddToOverlay(string filename)
         {
             ImageWithData iwd = decode(filename);
+            if (iwd.image == null)
+                return;
             //Reject no - gps frames
             if (Math.Abs(iwd.data.targetLongitude) < 0.01)
                 return;
@@ -231,7 +233,7 @@ namespace FTP_Image_Browser
         {
             //Clip altitude to avoid errors on ground
             if (altitude < 0) altitude = 0;
-            double avgResolution = (1936.0);//pix
+            double avgResolution = (1936.0 + 1216) / 2;//pix
             if (viewAngle_ < 0)
             {
                 double focalLength = 16;//mm
@@ -267,6 +269,7 @@ namespace FTP_Image_Browser
             ImageData dataStructure = new ImageData();
 
             byte[] bytes = System.IO.File.ReadAllBytes(filename);
+            if (bytes.GetLength(0) == 0) return new ImageWithData();
 
             int sizeOFStructure = System.Runtime.InteropServices.Marshal.SizeOf(typeof(ImageData));
 

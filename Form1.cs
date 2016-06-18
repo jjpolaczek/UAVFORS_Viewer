@@ -164,7 +164,8 @@ namespace FTP_Image_Browser
                     treeViewFolders.Nodes[0].Nodes.Add(str);
                 overlayImg.OverlayNew(filesDownloaded);
             }
-            overlayImg.ResizeAll();
+            //overlayImg.ResizeAll();
+
             //Update sliders//
             trackBarTime.Minimum = (int)overlayImg.timeRoiMin_;
             trackBarTime.Maximum = (int)overlayImg.timeRoiMax_;
@@ -271,6 +272,7 @@ namespace FTP_Image_Browser
 
         private void gMapControl_OnMapZoomChanged()
         {
+            gMapControl.Refresh();
             overlayImg.ResizeAll();
         }
 
