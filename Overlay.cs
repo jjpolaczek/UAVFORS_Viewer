@@ -256,7 +256,7 @@ namespace FTP_Image_Browser
             public float planeLatitude;
             public float planeLongitude;
             public float planeYaw;
-            //unsafe public fixed char imageName[24];
+           // unsafe public fixed char imageName[60];
         }
         public struct ImageWithData
         {
@@ -266,6 +266,8 @@ namespace FTP_Image_Browser
         }
         public ImageWithData decode(string filename)
         {
+            if (!filename.EndsWith(".jpg"))
+                return new ImageWithData();
             ImageData dataStructure = new ImageData();
 
             byte[] bytes = System.IO.File.ReadAllBytes(filename);
