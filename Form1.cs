@@ -67,6 +67,17 @@ namespace FTP_Image_Browser
             ftpRequestWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FtpDownloadedFiles);
             ftpRequestWorker.RunWorkerAsync();
         }
+        private void ListCommDirAsync()
+        {
+            if (ftpClient.commWorking == true) return;
+            //start new file synchronization task in background
+            BackgroundWorker ftpRequestWorker = new BackgroundWorker();
+            ftpRequestWorker.DoWork += new DoWorkEventHandler(ftpClient.FtpCommDirectoryWorker);
+            ftpRequestWorker.ProgressChanged += new ProgressChangedEventHandler(progressChanged);
+            ftpRequestWorker.WorkerReportsProgress = false;
+            ftpRequestWorker.RunWorkerCompleted += new RunWorkerCompletedEventHandler(FtpCommComplete);
+            ftpRequestWorker.RunWorkerAsync("UAVFORS/comm");
+        }
         private void connectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             //Reset working directory
@@ -176,6 +187,21 @@ namespace FTP_Image_Browser
             if (overlayImg.imageFilters_.timeMax == -1) trackBarTimeMax.Value = trackBarTimeMax.Maximum;
                   
         }
+        //Handle communication work
+        private void FtpCommComplete(object sender, RunWorkerCompletedEventArgs e)
+        {
+            List<string> dirListing = (List<string>)e.Result;
+            if(dirListing != null)
+            {
+                for(int i = 0; i < dirListing.Count; i++)
+                {
+                    if(dirListing.ElementAt(i).Contains(".jpg"))
+                    {
+                        Console.WriteLine(dirListing.ElementAt(i));
+                    }
+                }
+            }
+        }
         //General utility handlers
         private void progressChanged(object sender, ProgressChangedEventArgs e)
         {
@@ -202,6 +228,11 @@ namespace FTP_Image_Browser
                     timerAutoSync_.Interval = 5000;
                     timerAutoSync_.Tick += AutoTimerTick;
                     timerAutoSync_.Start();
+
+                    timerCommUAV_ = new Timer();
+                    timerCommUAV_.Interval = 1000;
+                    timerCommUAV_.Tick += CommTimerTick;
+                    timerCommUAV_.Start();
                     break;
                 case DialogResult.No:
                     //Start synchronisation
@@ -220,6 +251,10 @@ namespace FTP_Image_Browser
         private void AutoTimerTick(object sender, EventArgs e)
         {
             SyncWorkingDirectoryAsync();
+        }
+        private void CommTimerTick(object sender, EventArgs e)
+        {
+            ListCommDirAsync();
         }
         //Menu map handlers//
         private void satelliteToolStripMenuItem_Click(object sender, EventArgs e)
@@ -269,6 +304,7 @@ namespace FTP_Image_Browser
         };
         private FtpConnectionState connectionState_ = FtpConnectionState.Disconnected;
         private Timer timerAutoSync_;
+        private Timer timerCommUAV_;
 
         private void gMapControl_OnMapZoomChanged()
         {
@@ -380,6 +416,10 @@ namespace FTP_Image_Browser
             */
         }
 
+        private void gMapControl_OnMarkerEnter(GMapMarker item)
+        {
+
+        }
     }
 }
 
