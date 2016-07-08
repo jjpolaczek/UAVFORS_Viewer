@@ -82,6 +82,7 @@ namespace FTP_Image_Browser
              {
                  AddToOverlay(image);
              });
+            ResizeAll();
         }
         public double AddPOI(double lat, double lng)
         {
@@ -113,7 +114,7 @@ namespace FTP_Image_Browser
                     MarkerData imgParam = (MarkerData)marker.Tag;
                     double width =  (double)imgParam.baseX / (double) imgParam.pixelDensity;//width in m
                     double height = (double)imgParam.baseY / (double) imgParam.pixelDensity;//height in m
-                    marker.Size = new Size((int) Math.Round(10.0 * width * size10m + +sizeSkew_) , (int)Math.Round(10.0 * height * size10m +sizeSkew_));
+                    marker.Size = new Size((int) Math.Round(width * size10m + +sizeSkew_) , (int)Math.Round( height * size10m +sizeSkew_));
                 }
                 
             }
@@ -247,6 +248,7 @@ namespace FTP_Image_Browser
         // Added by KŁ 11.06.2016
         public struct ImageData
         {
+            unsafe public fixed byte imageName[32]; 
             public UInt32 time;
             public UInt32 score;
             public float targetLatitude;
@@ -288,6 +290,15 @@ namespace FTP_Image_Browser
             dataStructure = (ImageData)Marshal.PtrToStructure(ptr, dataStructure.GetType());
             Marshal.FreeHGlobal(ptr);
             ImageWithData iwd = new ImageWithData();
+            //DEcoding of image name, bad bad c#
+            byte[] resbyt = new byte[32];
+            unsafe
+            {
+                for (int i = 0; i < 32; i++) resbyt[i] = dataStructure.imageName[i];
+            }
+
+            string result = System.Text.Encoding.ASCII.GetString(resbyt);
+
             iwd.image = Image.FromFile(filename);
             iwd.data = dataStructure;
 

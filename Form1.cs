@@ -304,12 +304,7 @@ namespace FTP_Image_Browser
         }
         private void gMapControl_MouseClick(object sender, MouseEventArgs e)
         {
-            if(e.Button == MouseButtons.Right)
-            {
-                locationTemp_ = e.Location;
-                contextMenuStripMap.Show((GMapControl)sender,e.Location);
-            }
-            else if(e.Button == MouseButtons.Left)
+            if(e.Button == MouseButtons.Left)
             {
                 double X = gMapControl.FromLocalToLatLng(e.X, e.Y).Lng;
                 double Y = gMapControl.FromLocalToLatLng(e.X, e.Y).Lat;
@@ -324,6 +319,15 @@ namespace FTP_Image_Browser
                 labelUTME.Text = UTME.ToString("#.00") + "E";
                 labelUTMN.Text = UTMN.ToString("#.00") + "N";
                 labelUTMzone.Text = UTMzone.ToString();
+            }
+        }
+        
+        private void gMapControl_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                locationTemp_ = e.Location;
+                contextMenuStripMap.Show((GMapControl)sender, e.Location);
             }
         }
         private Point locationTemp_;
@@ -375,6 +379,7 @@ namespace FTP_Image_Browser
             }
             */
         }
+
     }
 }
 
