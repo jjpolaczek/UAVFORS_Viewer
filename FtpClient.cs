@@ -7,6 +7,7 @@ using System.Windows.Forms;
 using System.ComponentModel;
 using System.Drawing;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace FTP_Image_Browser
 {
@@ -92,51 +93,22 @@ namespace FTP_Image_Browser
         {
             commWorking = true;
             string remoteDir = (string)e.Argument;
-            //(sender as BackgroundWorker).ReportProgress(0, "Connecting to Server");
-            // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remoteDir);
-            request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
-
-            FtpWebResponse response;
-            request.Credentials = new NetworkCredential(username_, password_);
-
-            //(sender as BackgroundWorker).ReportProgress(25, "Connecting to Server");
-            try
+            List<string> dirListing;
+            dirListing = FtpListDirectory(remoteDir);
+            if (dirListing != null)
             {
-                response = (FtpWebResponse)request.GetResponse();
-            }
-            catch (WebException exception)
-            {
-                System.Console.WriteLine("Server not responding, message: " + exception.Message);
-                MessageBox.Show("Cannot connect to remote server \r\nDescription:" + exception.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                e.Result = null;
-                autoWorking = false;
-                return;
-            }
-   // (sender as BackgroundWorker).ReportProgress(75, "Directory listing recieved, processing");
-            Stream responseStream = response.GetResponseStream();
-            StreamReader reader = new StreamReader(responseStream);
-            // Console.WriteLine(reader.ReadToEnd());
-            List<string> dirListing = new List<string>();
-            while (true)
-            {
-                string dirLine = reader.ReadLine();
-                if (dirLine == null) break;
-                else
+                for (int i = 0; i < dirListing.Count; i++)
                 {
-                    //Split directory line listing string//
-                    string[] dirParam = dirLine.Split(new char[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
-                    //Last parameter is the folder/file name - assume it soes not contain any space separators
-                    dirListing.Add(dirParam[dirParam.Length - 1]);
-                    //Console.WriteLine(dirParam[dirParam.Length-1]);
+                    if (dirListing.ElementAt(i).Contains(".jpg"))
+                    {
+                        Console.WriteLine(dirListing.ElementAt(i));
+                        DownloadFile("UAVFORS/comm", dirListing.ElementAt(i), "UAVFORS/comm");
+                        //RemoveFile("UAVFORS/comm", dirListing.ElementAt(i));
+                        e.Result = "UAVFORS/comm/" + dirListing.ElementAt(i);
+                        break;
+                    }
                 }
             }
-
-            //Console.WriteLine("Directory List Complete, status {0}", response.StatusDescription);
-            //(sender as BackgroundWorker).ReportProgress(100, "Directory list complete!");
-            reader.Close();
-            response.Close();
-            e.Result = dirListing;
             commWorking = false;
             return;
         }
@@ -224,16 +196,38 @@ namespace FTP_Image_Browser
             }
             
         }
-        public void DownloadFileWorkingDir(string filename)
+        public void RemoveFile(string remotePath, string filename)
         {
-            string remotePath = WorkingDir + "/" + filename;
-            //Ensure directory existence
-            if(!Directory.Exists(WorkingDir))
+            // Get the object used to communicate with the server.
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remotePath + "/" + filename);
+            request.Method = WebRequestMethods.Ftp.DeleteFile;
+            
+            request.Credentials = new NetworkCredential(username_, password_);
+            request.KeepAlive = true;
+
+            FtpWebResponse response;
+            try
             {
-                Directory.CreateDirectory(WorkingDir);
+                response = (FtpWebResponse)request.GetResponse();
+            }
+            catch (WebException exception)
+            {
+                System.Console.WriteLine("Server not responding, message: " + exception.Message);
+                return;
+            }
+            Console.WriteLine("Delete Complete, status {0}", response.StatusDescription);
+
+        }
+        public void DownloadFile(string remotePath, string filename, string destinationPath)
+        {
+            //string remotePath = WorkingDir + "/" + filename;
+            //Ensure directory existence
+            if (!Directory.Exists(destinationPath))
+            {
+                Directory.CreateDirectory(destinationPath);
             }
             // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remotePath);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remotePath + "/" + filename);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
 
             // use binary mode for file transfer
@@ -252,18 +246,23 @@ namespace FTP_Image_Browser
                 System.Console.WriteLine("Server not responding, message: " + exception.Message);
                 return;
             }
-            Console.WriteLine("Download Complete, status {0}", response.StatusDescription);
+            //Console.WriteLine("Download Complete, status {0}", response.StatusDescription);
             Stream responseStream = response.GetResponseStream();
             StreamReader reader = new StreamReader(responseStream);
 
             //Write file to disk directory
-            var fileStream = File.Create(remotePath);
+            var fileStream = File.Create(destinationPath + "/" + filename);
             //responseStream.Seek(0, SeekOrigin.Begin);
             responseStream.CopyTo(fileStream);
-
+            fileStream.Flush();
             fileStream.Close();
             reader.Close();
             response.Close();
+
+        }
+        public void DownloadFileWorkingDir(string filename)
+        {
+            DownloadFile(WorkingDir, filename, WorkingDir);
         }
         public List<string> FtpListDirectory(string remoteDir)
         {
@@ -303,7 +302,7 @@ namespace FTP_Image_Browser
             }
 
 
-            Console.WriteLine("Directory List Complete, status {0}", response.StatusDescription);
+           // Console.WriteLine("Directory List Complete, status {0}", response.StatusDescription);
 
             reader.Close();
             response.Close();

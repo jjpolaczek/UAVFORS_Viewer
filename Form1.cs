@@ -44,6 +44,8 @@ namespace FTP_Image_Browser
             gMapControl.Overlays.Add(imageOverlay);
             gMapControl.Overlays.Add(scaleOverlay);
             overlayImg = new Overlay(imageOverlay, scaleOverlay, gMapControl);
+            gMapControl.IgnoreMarkerOnMouseWheel = true;
+            gMapControl.LevelsKeepInMemmory = 18;
         }
         private void ListWorkingDirectoryAsync()
         {
@@ -87,7 +89,11 @@ namespace FTP_Image_Browser
 
         private void buttonMagic_Click(object sender, EventArgs e)
         {
-            if(overlayImg.sizeSkew_ == 10)
+           // ftpClient.RequestImage("jebaj sie");
+           // return;
+            ListCommDirAsync();
+            return;
+            if (overlayImg.sizeSkew_ == 10)
                    overlayImg.sizeSkew_ = 0;
             else if(overlayImg.sizeSkew_ == 0 )
                 overlayImg.sizeSkew_ = 10;
@@ -190,16 +196,11 @@ namespace FTP_Image_Browser
         //Handle communication work
         private void FtpCommComplete(object sender, RunWorkerCompletedEventArgs e)
         {
-            List<string> dirListing = (List<string>)e.Result;
-            if(dirListing != null)
+            string fileToDisplay = (string)e.Result;
+            if(fileToDisplay != null)
             {
-                for(int i = 0; i < dirListing.Count; i++)
-                {
-                    if(dirListing.ElementAt(i).Contains(".jpg"))
-                    {
-                        Console.WriteLine(dirListing.ElementAt(i));
-                    }
-                }
+                TopViewDialog imageDisplay = new TopViewDialog(fileToDisplay);
+                imageDisplay.Show();
             }
         }
         //General utility handlers
@@ -232,7 +233,7 @@ namespace FTP_Image_Browser
                     timerCommUAV_ = new Timer();
                     timerCommUAV_.Interval = 1000;
                     timerCommUAV_.Tick += CommTimerTick;
-                    timerCommUAV_.Start();
+                    //timerCommUAV_.Start();
                     break;
                 case DialogResult.No:
                     //Start synchronisation

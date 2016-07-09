@@ -398,3 +398,19 @@ namespace FTP_Image_Browser
 
     }
 }
+
+//Code for later development of custom overlay
+//GMapPolygon polygon;
+//List<PointLatLng> points = new List<PointLatLng>();
+//points.Add(new PointLatLng(56.1865, 11.8129));
+//points.Add(new PointLatLng(56.1865, 25.1576));
+//points.Add(new PointLatLng(48.1334, 25.1576));
+//points.Add(new PointLatLng(48.1334, 11.8129));
+//polygon = new GMapPolygon(points, "mypolygon");
+//GMapImage image = new GMapImage();
+//Bitmap bmp = list[index].generateBitmap(new BourkyScale());
+//polygon.Fill = new TextureBrush(bmp);
+//polygon.Stroke = new Pen(Color.Red, 1);
+//GMapOverlay polyOverlay = new GMapOverlay("polygons");
+//gMapControl1.Overlays.Add(polyOverlay);
+//polyOverlay.Polygons.Add(polygon);
