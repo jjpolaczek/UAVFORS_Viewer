@@ -107,7 +107,13 @@ namespace FTP_Image_Browser
         //event handlers for specific tasks
         private void SliderChanged(object sender, EventArgs e)
         {
-            if(trackBarScoreMax.Maximum != trackBarScoreMax.Value)
+            if (trackBarTimeMax.Maximum != trackBarTimeMax.Value)
+                overlayImg.imageFilters_.timeMax = (int)overlayImg.timeRoiMax_;
+            else
+                overlayImg.imageFilters_.timeMax = -1;
+
+            UpdateSlidersFromOverlay();
+            if (trackBarTimeMax.Maximum != trackBarTimeMax.Value)
                 overlayImg.SetFilters(new Overlay.MarkerFilters(trackBarScoreMax.Value, trackBarScore.Value, trackBarTimeMax.Value, trackBarTime.Value));
             else
                 overlayImg.SetFilters(new Overlay.MarkerFilters(trackBarScoreMax.Value, trackBarScore.Value, -1, trackBarTime.Value));
@@ -171,8 +177,8 @@ namespace FTP_Image_Browser
                     treeViewFolders.Nodes[0].Nodes.Add(str);
                 overlayImg.WorkingDir = ftpClient.WorkingDir;
                 overlayImg.OverlayWorkingDir();
-                trackBarTime.TickFrequency = 10000;
-                trackBarTimeMax.TickFrequency = 10000;
+                trackBarTime.TickFrequency = 1000;
+                trackBarTimeMax.TickFrequency = 1000;
             }
             else if(connectionState_ == FtpConnectionState.Synchronised)
             {
@@ -184,14 +190,27 @@ namespace FTP_Image_Browser
             //overlayImg.ResizeAll();
 
             //Update sliders//
+            UpdateSlidersFromOverlay();
+
+        }
+        private void UpdateSlidersFromOverlay()
+        {
             trackBarTime.Minimum = (int)overlayImg.timeRoiMin_;
             trackBarTime.Maximum = (int)overlayImg.timeRoiMax_;
             if (trackBarTime.Value < trackBarTime.Minimum) trackBarTime.Value = trackBarTime.Minimum;
             trackBarTimeMax.Minimum = (int)overlayImg.timeRoiMin_;
             trackBarTimeMax.Maximum = (int)overlayImg.timeRoiMax_;
             if (trackBarTimeMax.Value < trackBarTimeMax.Minimum) trackBarTimeMax.Value = trackBarTimeMax.Minimum;
+            if (trackBarTimeMax.Value > trackBarTimeMax.Maximum) trackBarTimeMax.Value = trackBarTimeMax.Maximum;
             if (overlayImg.imageFilters_.timeMax == -1) trackBarTimeMax.Value = trackBarTimeMax.Maximum;
-                  
+
+            trackBarScore.Minimum = (int)overlayImg.scoreRoiMin_;
+            trackBarScore.Maximum = (int)overlayImg.scoreRoiMax_;
+            if (trackBarScore.Value < trackBarScore.Minimum) trackBarScore.Value = trackBarScore.Minimum;
+            trackBarScoreMax.Minimum = (int)overlayImg.scoreRoiMin_;
+            trackBarScoreMax.Maximum = (int)overlayImg.scoreRoiMax_;
+            if (trackBarScoreMax.Value < trackBarScoreMax.Minimum) trackBarScoreMax.Value = trackBarScoreMax.Minimum;
+            if (trackBarScoreMax.Value < trackBarScoreMax.Maximum) trackBarScoreMax.Value = trackBarScoreMax.Maximum;
         }
         //Handle communication work
         private void FtpCommComplete(object sender, RunWorkerCompletedEventArgs e)
@@ -233,7 +252,7 @@ namespace FTP_Image_Browser
                     timerCommUAV_ = new Timer();
                     timerCommUAV_.Interval = 1000;
                     timerCommUAV_.Tick += CommTimerTick;
-                    //timerCommUAV_.Start();
+                    timerCommUAV_.Start();
                     break;
                 case DialogResult.No:
                     //Start synchronisation

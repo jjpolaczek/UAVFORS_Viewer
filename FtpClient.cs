@@ -100,7 +100,7 @@ namespace FTP_Image_Browser
                     {
                         Console.WriteLine(dirListing.ElementAt(i));
                         DownloadFile("UAVFORS/comm", dirListing.ElementAt(i), "UAVFORS/comm");
-                        //RemoveFile("UAVFORS/comm", dirListing.ElementAt(i));
+                        RemoveFile("UAVFORS/comm", dirListing.ElementAt(i));
                         e.Result = "UAVFORS/comm/" + dirListing.ElementAt(i);
                         break;
                     }

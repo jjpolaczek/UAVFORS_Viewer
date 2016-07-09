@@ -206,6 +206,11 @@ namespace FTP_Image_Browser
                 if (timeRoiMin_ == 0) timeRoiMin_ = iwd.data.time;
                 if (iwd.data.time < timeRoiMin_) timeRoiMin_ = iwd.data.time;
                 if (iwd.data.time > timeRoiMax_) timeRoiMax_ = iwd.data.time;
+
+                if (scoreRoiMin_ == 0) scoreRoiMin_ = iwd.data.score;
+                if (scoreRoiMax_ == 10000) scoreRoiMax_ = iwd.data.score;
+                if (iwd.data.score < scoreRoiMin_) scoreRoiMin_ = iwd.data.score;
+                if (iwd.data.score > scoreRoiMax_) scoreRoiMax_ = iwd.data.score;
             }
             //verify filters
             //Filter score
@@ -239,6 +244,7 @@ namespace FTP_Image_Browser
         List<ImageWithData> imageCollection_;
         public MarkerFilters imageFilters_;
         public uint timeRoiMin_ = 0, timeRoiMax_ = 1;
+        public uint scoreRoiMin_ = 0, scoreRoiMax_ = 10000;
         //Gets density of pixels at given altitude
         public int GetPixelDensity(double altitude)
         {
