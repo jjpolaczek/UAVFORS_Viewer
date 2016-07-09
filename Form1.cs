@@ -366,6 +366,21 @@ namespace FTP_Image_Browser
                 locationTemp_ = e.Location;
                 contextMenuStripMap.Show((GMapControl)sender, e.Location);
             }
+            else if (e.Button == MouseButtons.Left)
+            {
+                if(isOverMarker_)
+                {
+                    DialogResult result = MessageBox.Show("Download corresponding image named " + ((Overlay.MarkerData)overMarker.Tag).sourceFileName, "ROI ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    if (result == DialogResult.Yes)
+                    {
+                        ftpClient.RequestImage(((Overlay.MarkerData)overMarker.Tag).sourceFileName);
+                    }
+                    else
+                    {
+                        return;
+                    }
+                }
+            }
         }
         private Point locationTemp_;
         private void gMapControl_MouseMove(object sender, MouseEventArgs e)
@@ -390,6 +405,7 @@ namespace FTP_Image_Browser
         private void gMapControl_OnMarkerClick(GMapMarker item, MouseEventArgs e)
         {
             //Show coordinates and messagebox//
+
             double X = gMapControl.FromLocalToLatLng(e.X, e.Y).Lng;
             double Y = gMapControl.FromLocalToLatLng(e.X, e.Y).Lat;
             string longitude = X.ToString("#.0000000");
@@ -403,23 +419,20 @@ namespace FTP_Image_Browser
             labelUTME.Text = UTME.ToString("#.00") + "E";
             labelUTMN.Text = UTMN.ToString("#.00") + "N";
             labelUTMzone.Text = UTMzone.ToString();
-            //MessageBox for downloading//
-            /*
-            DialogResult result = MessageBox.Show("Download corresponding image?", "ROI " , MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if(result == DialogResult.Yes)
-            {
-                ftpClient.RequestImage();
-            }
-            else
-            {
-                return;
-            }
-            */
         }
 
+        bool isOverMarker_ = false;
+        GMapMarker overMarker;
         private void gMapControl_OnMarkerEnter(GMapMarker item)
         {
+            overMarker = item;
+            isOverMarker_ = true;
+        }
 
+
+        private void gMapControl_OnMarkerLeave(GMapMarker item)
+        {
+            isOverMarker_ = false;
         }
     }
 }

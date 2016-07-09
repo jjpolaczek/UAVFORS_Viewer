@@ -41,13 +41,14 @@ namespace FTP_Image_Browser
 
         public struct MarkerData
         {
-            public MarkerData(int x, int y,float yawAngle, float alt,int pixdens)
+            public MarkerData(int x, int y,float yawAngle, float alt,int pixdens, string filename)
             {
                 baseX = x;
                 baseY = y;
                 altitude = alt;
                 yaw = yawAngle;
                 pixelDensity = pixdens;//Default value change at initialization
+                sourceFileName = filename;
                 //imgName = imgname;
             }
             public int baseX;
@@ -55,6 +56,7 @@ namespace FTP_Image_Browser
             public float altitude;
             public int pixelDensity;
             public float yaw;
+            public string sourceFileName;
             //public string imgName;
         }
         public struct MarkerFilters
@@ -170,7 +172,11 @@ namespace FTP_Image_Browser
             GMarkerGoogle marker = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.targetLatitude, iwd.data.targetLongitude), (Bitmap)iwd.image);
             //GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.planeLatitude, iwd.data.planeLongitude), (Bitmap)iwd.image);
             marker.Offset = new Point(0, 0);
-            marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude, GetPixelDensity(iwd.data.planeAltitude));
+            unsafe
+            {
+            marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude, 
+                GetPixelDensity(iwd.data.planeAltitude),convertImageName(iwd.data.imageName));
+            }
             lock (overlayImgLock_)
             {
                 overlayImg_.Markers.Add(marker);
@@ -216,8 +222,12 @@ namespace FTP_Image_Browser
             GMarkerGoogle marker = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.targetLatitude, iwd.data.targetLongitude), (Bitmap)iwd.image);
             //GMarkerGoogle markerTest = new GMarkerGoogle(new GMap.NET.PointLatLng(iwd.data.planeLatitude, iwd.data.planeLongitude), (Bitmap)iwd.image);
             marker.Offset = new Point(0, 0);
-            marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude, GetPixelDensity(iwd.data.planeAltitude));
-            lock(overlayImgLock_)
+            unsafe
+            {
+            marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude, 
+                GetPixelDensity(iwd.data.planeAltitude), convertImageName(iwd.data.imageName));
+            }
+            lock (overlayImgLock_)
             {
                 overlayImg_.Markers.Add(marker);
             }
@@ -266,6 +276,25 @@ namespace FTP_Image_Browser
 
             public ImageData data;
         }
+        private unsafe string convertImageName(byte *input)
+        {
+            byte[] resbyt = new byte[32];
+            for (int i = 0; i < 32; i++) resbyt[i] = input[i];
+            string result = System.Text.Encoding.ASCII.GetString(resbyt);
+            //result = result.Replace("\0", string.Empty);
+            string asAscii = Encoding.ASCII.GetString(
+                Encoding.Convert(
+                Encoding.UTF8,
+                Encoding.GetEncoding(
+                Encoding.ASCII.EncodingName,
+            new EncoderReplacementFallback(string.Empty),
+            new DecoderExceptionFallback()
+            ),
+            Encoding.UTF8.GetBytes(result)
+                )
+            );
+            return asAscii;
+        }
         public ImageWithData decode(string filename)
         {
             if (!filename.EndsWith(".jpg"))
@@ -291,13 +320,13 @@ namespace FTP_Image_Browser
             Marshal.FreeHGlobal(ptr);
             ImageWithData iwd = new ImageWithData();
             //DEcoding of image name, bad bad c#
-            byte[] resbyt = new byte[32];
-            unsafe
-            {
-                for (int i = 0; i < 32; i++) resbyt[i] = dataStructure.imageName[i];
-            }
+            //byte[] resbyt = new byte[32];
+            //unsafe
+            //{
+            //    for (int i = 0; i < 32; i++) resbyt[i] = dataStructure.imageName[i];
+            //}
 
-            string result = System.Text.Encoding.ASCII.GetString(resbyt);
+            //string result = System.Text.Encoding.ASCII.GetString(resbyt);
 
             iwd.image = Image.FromFile(filename);
             iwd.data = dataStructure;
