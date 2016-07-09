@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Drawing;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Text;
 
 namespace FTP_Image_Browser
 {
@@ -29,10 +30,6 @@ namespace FTP_Image_Browser
 
         }
         public void CheckForFullImages()
-        {
-
-        }
-        public void RequestImage(string filename)
         {
 
         }
@@ -195,6 +192,38 @@ namespace FTP_Image_Browser
                 dirFiles.RemoveAt(0);
             }
             
+        }
+        public void RequestImage(string filename)
+        {
+            //List directory to look for existing request
+            List<string> dirlist = FtpListDirectory("UAVFORS/comm");
+            if (dirlist.Contains("request.txt")) return;
+            // Get the object used to communicate with the server.
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/UAVFORS/comm/request.txt");
+            request.Method = WebRequestMethods.Ftp.UploadFile;
+
+            // This example assumes the FTP site uses anonymous logon.
+            request.Credentials = new NetworkCredential(username_, password_);
+
+            // Copy the contents of the file to the request stream.
+            //StreamReader sourceStream = new StreamReader("testfile.txt");
+            byte[] fileContents = Encoding.UTF8.GetBytes(filename);
+            request.ContentLength = fileContents.Length;
+
+            Stream requestStream = request.GetRequestStream();
+            requestStream.Write(fileContents, 0, fileContents.Length);
+            requestStream.Close();
+            FtpWebResponse response;
+            try
+            {
+                response = (FtpWebResponse)request.GetResponse();
+            }
+            catch (WebException exception)
+            {
+                System.Console.WriteLine("Server not responding, message: " + exception.Message);
+                return;
+            }
+            response.Close();
         }
         public void RemoveFile(string remotePath, string filename)
         {
