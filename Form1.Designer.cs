@@ -68,12 +68,21 @@
             this.labelUTMN = new System.Windows.Forms.Label();
             this.labelUTME = new System.Windows.Forms.Label();
             this.labelUTMzone = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.trackBarSize = new System.Windows.Forms.TrackBar();
+            this.label6 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStripMap.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarScore)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreMax)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarTimeMax)).BeginInit();
+            this.panel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarSize)).BeginInit();
             this.SuspendLayout();
             // 
             // gMapControl
@@ -237,6 +246,7 @@
             this.disconnectToolStripMenuItem.Name = "disconnectToolStripMenuItem";
             this.disconnectToolStripMenuItem.Size = new System.Drawing.Size(157, 26);
             this.disconnectToolStripMenuItem.Text = "Disconnect";
+            this.disconnectToolStripMenuItem.Click += new System.EventHandler(this.disconnectToolStripMenuItem_Click);
             // 
             // progressBar
             // 
@@ -312,7 +322,7 @@
             // 
             // trackBarScore
             // 
-            this.trackBarScore.Location = new System.Drawing.Point(972, 232);
+            this.trackBarScore.Location = new System.Drawing.Point(-2, 3);
             this.trackBarScore.Maximum = 10000;
             this.trackBarScore.Name = "trackBarScore";
             this.trackBarScore.Size = new System.Drawing.Size(264, 56);
@@ -322,7 +332,7 @@
             // 
             // trackBarScoreMax
             // 
-            this.trackBarScoreMax.Location = new System.Drawing.Point(972, 295);
+            this.trackBarScoreMax.Location = new System.Drawing.Point(1, 65);
             this.trackBarScoreMax.Maximum = 10000;
             this.trackBarScoreMax.Name = "trackBarScoreMax";
             this.trackBarScoreMax.Size = new System.Drawing.Size(264, 56);
@@ -333,7 +343,7 @@
             // 
             // trackBarTime
             // 
-            this.trackBarTime.Location = new System.Drawing.Point(972, 406);
+            this.trackBarTime.Location = new System.Drawing.Point(0, 124);
             this.trackBarTime.Maximum = 1;
             this.trackBarTime.Name = "trackBarTime";
             this.trackBarTime.Size = new System.Drawing.Size(264, 56);
@@ -342,7 +352,7 @@
             // 
             // trackBarTimeMax
             // 
-            this.trackBarTimeMax.Location = new System.Drawing.Point(972, 471);
+            this.trackBarTimeMax.Location = new System.Drawing.Point(-2, 186);
             this.trackBarTimeMax.Maximum = 1;
             this.trackBarTimeMax.Name = "trackBarTimeMax";
             this.trackBarTimeMax.Size = new System.Drawing.Size(264, 56);
@@ -431,10 +441,83 @@
             this.labelUTMzone.TabIndex = 17;
             this.labelUTMzone.Text = "zone";
             // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(190, 42);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(75, 17);
+            this.label2.TabIndex = 18;
+            this.label2.Text = "Score Min.";
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(187, 104);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(78, 17);
+            this.label3.TabIndex = 19;
+            this.label3.Text = "Score Max.";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(196, 163);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(69, 17);
+            this.label4.TabIndex = 20;
+            this.label4.Text = "Time Min.";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(193, 225);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(72, 17);
+            this.label5.TabIndex = 21;
+            this.label5.Text = "Time Max.";
+            // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.label5);
+            this.panel1.Controls.Add(this.label2);
+            this.panel1.Controls.Add(this.trackBarScore);
+            this.panel1.Controls.Add(this.label3);
+            this.panel1.Controls.Add(this.label4);
+            this.panel1.Controls.Add(this.trackBarScoreMax);
+            this.panel1.Controls.Add(this.trackBarTime);
+            this.panel1.Controls.Add(this.trackBarTimeMax);
+            this.panel1.Location = new System.Drawing.Point(972, 328);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(265, 271);
+            this.panel1.TabIndex = 22;
+            // 
+            // trackBarSize
+            // 
+            this.trackBarSize.Location = new System.Drawing.Point(1083, 266);
+            this.trackBarSize.Maximum = 40;
+            this.trackBarSize.Name = "trackBarSize";
+            this.trackBarSize.Size = new System.Drawing.Size(151, 56);
+            this.trackBarSize.TabIndex = 23;
+            this.trackBarSize.TickFrequency = 2;
+            this.trackBarSize.ValueChanged += new System.EventHandler(this.trackBarSize_ValueChanged);
+            // 
+            // label6
+            // 
+            this.label6.AutoSize = true;
+            this.label6.Location = new System.Drawing.Point(1016, 266);
+            this.label6.Name = "label6";
+            this.label6.Size = new System.Drawing.Size(74, 17);
+            this.label6.TabIndex = 24;
+            this.label6.Text = "Size boost";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1248, 656);
+            this.Controls.Add(this.label6);
+            this.Controls.Add(this.trackBarSize);
+            this.Controls.Add(this.panel1);
             this.Controls.Add(this.labelUTMzone);
             this.Controls.Add(this.labelUTME);
             this.Controls.Add(this.labelUTMN);
@@ -444,10 +527,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.labelLongitude);
             this.Controls.Add(this.labelLatitude);
-            this.Controls.Add(this.trackBarTimeMax);
-            this.Controls.Add(this.trackBarTime);
-            this.Controls.Add(this.trackBarScoreMax);
-            this.Controls.Add(this.trackBarScore);
             this.Controls.Add(this.buttonMagic);
             this.Controls.Add(this.treeViewFolders);
             this.Controls.Add(this.labelStatus);
@@ -464,6 +543,9 @@
             ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreMax)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarTimeMax)).EndInit();
+            this.panel1.ResumeLayout(false);
+            this.panel1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarSize)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -511,6 +593,13 @@
         private System.Windows.Forms.Label labelUTMN;
         private System.Windows.Forms.Label labelUTME;
         private System.Windows.Forms.Label labelUTMzone;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.TrackBar trackBarSize;
+        private System.Windows.Forms.Label label6;
     }
 }
 

@@ -22,17 +22,18 @@ namespace FTP_Image_Browser
         {
             foreach (string dir in FtpListDirectory("UAVFORS/"))
             {
-                Console.WriteLine(dir);
+                //Console.WriteLine(dir);
             }
+        }
+        public void Disconnect()
+        {
+
         }
         ~FtpClient()
         {
 
         }
-        public void CheckForFullImages()
-        {
 
-        }
 
         public void FtpListDirectoryWorker(object sender, DoWorkEventArgs e)
         {
@@ -339,7 +340,23 @@ namespace FTP_Image_Browser
             return dirListing;
         }
 
-
+        public static bool CheckForInternetConnection()
+        {
+            try
+            {
+                using (var client = new WebClient())
+                {
+                    using (var stream = client.OpenRead("http://www.google.com"))
+                    {
+                        return true;
+                    }
+                }
+            }
+            catch
+            {
+                return false;
+            }
+        }
 
 
         public string WorkingDir { get; set; }

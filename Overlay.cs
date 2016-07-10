@@ -72,6 +72,16 @@ namespace FTP_Image_Browser
             public int scoreMax, scoreMin;
             public int timeMax, timeMin;
         }
+        public void Clear()
+        {
+            overlayImg_.Clear();
+            imageCollection_.Clear();
+            timeRoiMin_ = 0;
+            timeRoiMax_ = 1;
+            scoreRoiMin_ = 0;
+            scoreRoiMax_ = 10000;
+            imageFilters_ = new MarkerFilters((int)scoreRoiMax_, (int)scoreRoiMin_, -1, (int)timeRoiMin_);
+    }
         //Overlay handlers:
         //Add image minature to overlay
         public void SetFilters(MarkerFilters filters)
@@ -237,14 +247,7 @@ namespace FTP_Image_Browser
                 overlayImg_.Markers.Add(marker);
             }
         }
-        Object overlayImgLock_ = new Object();
-        GMapOverlay overlayImg_, overlayZoom_;
-        GMapControl gmap_;
-        Object imageCollectionLock_ = new Object();
-        List<ImageWithData> imageCollection_;
-        public MarkerFilters imageFilters_;
-        public uint timeRoiMin_ = 0, timeRoiMax_ = 1;
-        public uint scoreRoiMin_ = 0, scoreRoiMax_ = 10000;
+
         //Gets density of pixels at given altitude
         public int GetPixelDensity(double altitude)
         {
@@ -431,7 +434,16 @@ namespace FTP_Image_Browser
             return LetterDesignator;
         }
 
+        Object overlayImgLock_ = new Object();
+        GMapOverlay overlayImg_, overlayZoom_;
+        GMapControl gmap_;
+        Object imageCollectionLock_ = new Object();
+        List<ImageWithData> imageCollection_;
+        public MarkerFilters imageFilters_;
+        public uint timeRoiMin_ = 0, timeRoiMax_ = 1;
+        public uint scoreRoiMin_ = 0, scoreRoiMax_ = 10000;
     }
+
 }
 
 //Code for later development of custom overlay

@@ -46,6 +46,10 @@ namespace FTP_Image_Browser
             overlayImg = new Overlay(imageOverlay, scaleOverlay, gMapControl);
             gMapControl.IgnoreMarkerOnMouseWheel = true;
             gMapControl.LevelsKeepInMemmory = 18;
+            if(FtpClient.CheckForInternetConnection())
+            {
+                connectToolStripMenuItem_Click(new object(), new EventArgs());
+            }
         }
         private void ListWorkingDirectoryAsync()
         {
@@ -86,17 +90,22 @@ namespace FTP_Image_Browser
             ftpClient.WorkingDir = "UAVFORS";
             ListWorkingDirectoryAsync();
         }
-
+        private void disconnectToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            ftpClient.Disconnect();
+            overlayImg.Clear();
+            treeViewFolders.Nodes.Clear();
+        }
         private void buttonMagic_Click(object sender, EventArgs e)
         {
            // ftpClient.RequestImage("jebaj sie");
            // return;
-            ListCommDirAsync();
-            return;
-            if (overlayImg.sizeSkew_ == 10)
+            //ListCommDirAsync();
+            //return;
+            if (overlayImg.sizeSkew_ == 20)
                    overlayImg.sizeSkew_ = 0;
             else if(overlayImg.sizeSkew_ == 0 )
-                overlayImg.sizeSkew_ = 10;
+                overlayImg.sizeSkew_ = 20;
             //gMapControl_OnMapZoomChanged();
             //gMapControl.ZoomAndCenterMarkers("images");
            // overlayImg.SetFiltersWorker(new object(), new DoWorkEventArgs(new Overlay.MarkerFilters(1000, 0, 1400000, 1300000)));
@@ -148,11 +157,7 @@ namespace FTP_Image_Browser
             }
             else if(dirListing != null && ftpClient.WorkingDir.Contains("UAVFORS/"))
             {
-                //Listing image subdirectory
-                foreach (string str in dirListing)
-                {
-                    Console.WriteLine(str);
-                }
+                
 
             }
         }
@@ -203,6 +208,16 @@ namespace FTP_Image_Browser
             if (trackBarTimeMax.Value < trackBarTimeMax.Minimum) trackBarTimeMax.Value = trackBarTimeMax.Minimum;
             if (trackBarTimeMax.Value > trackBarTimeMax.Maximum) trackBarTimeMax.Value = trackBarTimeMax.Maximum;
             if (overlayImg.imageFilters_.timeMax == -1) trackBarTimeMax.Value = trackBarTimeMax.Maximum;
+            //Additional condition to add proper 10s divisionand 1s precision
+            if(trackBarTime.Maximum - trackBarTime.Minimum > 10000)
+            {
+                trackBarTime.TickFrequency = 10000;
+                trackBarTime.LargeChange = 5000;
+                trackBarTime.SmallChange = 1000;
+                trackBarTimeMax.LargeChange = 5000;
+                trackBarTimeMax.SmallChange = 1000;
+                trackBarTimeMax.TickFrequency = 10000;
+            }
 
             trackBarScore.Minimum = (int)overlayImg.scoreRoiMin_;
             trackBarScore.Maximum = (int)overlayImg.scoreRoiMax_;
@@ -452,6 +467,16 @@ namespace FTP_Image_Browser
         private void gMapControl_OnMarkerLeave(GMapMarker item)
         {
             isOverMarker_ = false;
+        }
+
+        private void trackBarSize_ValueChanged(object sender, EventArgs e)
+        {
+            TrackBar trackBar = sender as TrackBar;
+            if (trackBar != null)
+            {
+                overlayImg.sizeSkew_ = trackBar.Value;
+                overlayImg.ResizeAll();
+            }
         }
     }
 }
