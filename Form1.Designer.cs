@@ -55,8 +55,8 @@
             this.zoomInMarkersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.addPOIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.clearPOIToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.trackBarScore = new System.Windows.Forms.TrackBar();
-            this.trackBarScoreMax = new System.Windows.Forms.TrackBar();
+            this.trackBarScoreHue = new System.Windows.Forms.TrackBar();
+            this.trackBarScoreDensity = new System.Windows.Forms.TrackBar();
             this.trackBarTime = new System.Windows.Forms.TrackBar();
             this.trackBarTimeMax = new System.Windows.Forms.TrackBar();
             this.labelLatitude = new System.Windows.Forms.Label();
@@ -77,8 +77,8 @@
             this.label6 = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.contextMenuStripMap.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarScore)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreMax)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreHue)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreDensity)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarTime)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarTimeMax)).BeginInit();
             this.panel1.SuspendLayout();
@@ -320,26 +320,25 @@
             this.clearPOIToolStripMenuItem.Text = "Clear POI";
             this.clearPOIToolStripMenuItem.Click += new System.EventHandler(this.clearPOIToolStripMenuItem_Click);
             // 
-            // trackBarScore
+            // trackBarScoreHue
             // 
-            this.trackBarScore.Location = new System.Drawing.Point(-2, 3);
-            this.trackBarScore.Maximum = 10000;
-            this.trackBarScore.Name = "trackBarScore";
-            this.trackBarScore.Size = new System.Drawing.Size(264, 56);
-            this.trackBarScore.TabIndex = 6;
-            this.trackBarScore.TickFrequency = 200;
-            this.trackBarScore.ValueChanged += new System.EventHandler(this.SliderChanged);
+            this.trackBarScoreHue.Location = new System.Drawing.Point(-2, 3);
+            this.trackBarScoreHue.Maximum = 255;
+            this.trackBarScoreHue.Name = "trackBarScoreHue";
+            this.trackBarScoreHue.Size = new System.Drawing.Size(264, 56);
+            this.trackBarScoreHue.TabIndex = 6;
+            this.trackBarScoreHue.TickFrequency = 5;
+            this.trackBarScoreHue.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
-            // trackBarScoreMax
+            // trackBarScoreDensity
             // 
-            this.trackBarScoreMax.Location = new System.Drawing.Point(1, 65);
-            this.trackBarScoreMax.Maximum = 10000;
-            this.trackBarScoreMax.Name = "trackBarScoreMax";
-            this.trackBarScoreMax.Size = new System.Drawing.Size(264, 56);
-            this.trackBarScoreMax.TabIndex = 7;
-            this.trackBarScoreMax.TickFrequency = 200;
-            this.trackBarScoreMax.Value = 10000;
-            this.trackBarScoreMax.ValueChanged += new System.EventHandler(this.SliderChanged);
+            this.trackBarScoreDensity.Location = new System.Drawing.Point(1, 65);
+            this.trackBarScoreDensity.Maximum = 255;
+            this.trackBarScoreDensity.Name = "trackBarScoreDensity";
+            this.trackBarScoreDensity.Size = new System.Drawing.Size(264, 56);
+            this.trackBarScoreDensity.TabIndex = 7;
+            this.trackBarScoreDensity.TickFrequency = 5;
+            this.trackBarScoreDensity.ValueChanged += new System.EventHandler(this.SliderChanged);
             // 
             // trackBarTime
             // 
@@ -446,18 +445,18 @@
             this.label2.AutoSize = true;
             this.label2.Location = new System.Drawing.Point(190, 42);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(75, 17);
+            this.label2.Size = new System.Drawing.Size(79, 17);
             this.label2.TabIndex = 18;
-            this.label2.Text = "Score Min.";
+            this.label2.Text = "Score Hue.";
             // 
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(187, 104);
+            this.label3.Location = new System.Drawing.Point(179, 104);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(78, 17);
+            this.label3.Size = new System.Drawing.Size(86, 17);
             this.label3.TabIndex = 19;
-            this.label3.Text = "Score Max.";
+            this.label3.Text = "Score Dens.";
             // 
             // label4
             // 
@@ -481,10 +480,10 @@
             // 
             this.panel1.Controls.Add(this.label5);
             this.panel1.Controls.Add(this.label2);
-            this.panel1.Controls.Add(this.trackBarScore);
+            this.panel1.Controls.Add(this.trackBarScoreHue);
             this.panel1.Controls.Add(this.label3);
             this.panel1.Controls.Add(this.label4);
-            this.panel1.Controls.Add(this.trackBarScoreMax);
+            this.panel1.Controls.Add(this.trackBarScoreDensity);
             this.panel1.Controls.Add(this.trackBarTime);
             this.panel1.Controls.Add(this.trackBarTimeMax);
             this.panel1.Location = new System.Drawing.Point(972, 328);
@@ -539,8 +538,8 @@
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.contextMenuStripMap.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarScore)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreMax)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreHue)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.trackBarScoreDensity)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarTime)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.trackBarTimeMax)).EndInit();
             this.panel1.ResumeLayout(false);
@@ -578,8 +577,8 @@
         private System.Windows.Forms.ToolStripMenuItem toolStripMenuItem1;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripMap;
         private System.Windows.Forms.ToolStripMenuItem zoomInMarkersToolStripMenuItem;
-        private System.Windows.Forms.TrackBar trackBarScore;
-        private System.Windows.Forms.TrackBar trackBarScoreMax;
+        private System.Windows.Forms.TrackBar trackBarScoreHue;
+        private System.Windows.Forms.TrackBar trackBarScoreDensity;
         private System.Windows.Forms.TrackBar trackBarTime;
         private System.Windows.Forms.TrackBar trackBarTimeMax;
         private System.Windows.Forms.Label labelLatitude;

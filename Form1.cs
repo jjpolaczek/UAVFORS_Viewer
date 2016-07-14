@@ -95,6 +95,13 @@ namespace FTP_Image_Browser
             ftpClient.Disconnect();
             overlayImg.Clear();
             treeViewFolders.Nodes.Clear();
+            if (isAutoMode_)
+            {
+                timerAutoSync_.Dispose();
+                timerCommUAV_.Dispose();
+                isAutoMode_ = false;
+            }
+
         }
         private void buttonMagic_Click(object sender, EventArgs e)
         {
@@ -123,9 +130,9 @@ namespace FTP_Image_Browser
 
             UpdateSlidersFromOverlay();
             if (trackBarTimeMax.Maximum != trackBarTimeMax.Value)
-                overlayImg.SetFilters(new Overlay.MarkerFilters(trackBarScoreMax.Value, trackBarScore.Value, trackBarTimeMax.Value, trackBarTime.Value));
+                overlayImg.SetFilters(new Overlay.MarkerFilters(new Overlay.Scores((byte) trackBarScoreDensity.Value, (byte)trackBarScoreHue.Value,0,0), trackBarTimeMax.Value, trackBarTime.Value));
             else
-                overlayImg.SetFilters(new Overlay.MarkerFilters(trackBarScoreMax.Value, trackBarScore.Value, -1, trackBarTime.Value));
+                overlayImg.SetFilters(new Overlay.MarkerFilters(new Overlay.Scores((byte)trackBarScoreDensity.Value, (byte)trackBarScoreHue.Value, 0, 0), -1, trackBarTime.Value));
         }
         //Handle directory list return value
         private void FtpListFolders(object sender, RunWorkerCompletedEventArgs e)
@@ -218,14 +225,7 @@ namespace FTP_Image_Browser
                 trackBarTimeMax.SmallChange = 1000;
                 trackBarTimeMax.TickFrequency = 10000;
             }
-
-            trackBarScore.Minimum = (int)overlayImg.scoreRoiMin_;
-            trackBarScore.Maximum = (int)overlayImg.scoreRoiMax_;
-            if (trackBarScore.Value < trackBarScore.Minimum) trackBarScore.Value = trackBarScore.Minimum;
-            trackBarScoreMax.Minimum = (int)overlayImg.scoreRoiMin_;
-            trackBarScoreMax.Maximum = (int)overlayImg.scoreRoiMax_;
-            if (trackBarScoreMax.Value < trackBarScoreMax.Minimum) trackBarScoreMax.Value = trackBarScoreMax.Minimum;
-            if (trackBarScoreMax.Value < trackBarScoreMax.Maximum) trackBarScoreMax.Value = trackBarScoreMax.Maximum;
+            
         }
         //Handle communication work
         private void FtpCommComplete(object sender, RunWorkerCompletedEventArgs e)
@@ -402,7 +402,7 @@ namespace FTP_Image_Browser
             }
             else if (e.Button == MouseButtons.Left)
             {
-                if(isOverMarker_)
+                if(isOverMarker_ && isAutoMode_)
                 {
                     DialogResult result = MessageBox.Show("Download corresponding image named " + ((Overlay.MarkerData)overMarker.Tag).sourceFileName, "ROI ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)

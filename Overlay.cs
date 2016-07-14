@@ -28,20 +28,20 @@ namespace FTP_Image_Browser
             downPointScale_ = new GMarkerGoogle(new GMap.NET.PointLatLng(0.0, 0.0), GMarkerGoogleType.blue_dot);
             downPointScale_.Tag = "left";
             downPointScale_.Size = new Size(0, 0);
-            upPointScale_ = new GMarkerGoogle(new GMap.NET.PointLatLng(10.0/111000, 0.0), GMarkerGoogleType.blue_dot);
+            upPointScale_ = new GMarkerGoogle(new GMap.NET.PointLatLng(10.0 / 111000, 0.0), GMarkerGoogleType.blue_dot);
             upPointScale_.Tag = "right";
             upPointScale_.Size = new Size(0, 0);
             overlayZoom_.Markers.Add(downPointScale_);
             overlayZoom_.Markers.Add(upPointScale_);
             imageCollection_ = new List<ImageWithData>();
-            imageFilters_ = new MarkerFilters(10000, 0, -1, 0);
+            imageFilters_ = new MarkerFilters(new Scores(0), -1, 0);
         }
         //Markers for scaling the images
         private GMarkerGoogle downPointScale_, upPointScale_;
 
         public struct MarkerData
         {
-            public MarkerData(int x, int y,float yawAngle, float alt,int pixdens, string filename)
+            public MarkerData(int x, int y, float yawAngle, float alt, int pixdens, string filename)
             {
                 baseX = x;
                 baseY = y;
@@ -49,6 +49,8 @@ namespace FTP_Image_Browser
                 yaw = yawAngle;
                 pixelDensity = pixdens;//Default value change at initialization
                 sourceFileName = filename;
+                if (filename[0] != 'i')
+                    Console.WriteLine("WTF");
                 //imgName = imgname;
             }
             public int baseX;
@@ -62,14 +64,13 @@ namespace FTP_Image_Browser
         public struct MarkerFilters
         {
             //-1 roimax means infinite
-            public MarkerFilters(int scoremax, int scoremin, int roimax, int roimin)
+            public MarkerFilters(Scores scoreFilter, int roimax, int roimin)
             {
-                scoreMax = scoremax;
-                scoreMin = scoremin;
+                scoreMin = scoreFilter;
                 timeMax = roimax;
                 timeMin = roimin;
             }
-            public int scoreMax, scoreMin;
+            public Scores scoreMin;
             public int timeMax, timeMin;
         }
         public void Clear()
@@ -78,10 +79,9 @@ namespace FTP_Image_Browser
             imageCollection_.Clear();
             timeRoiMin_ = 0;
             timeRoiMax_ = 1;
-            scoreRoiMin_ = 0;
-            scoreRoiMax_ = 10000;
-            imageFilters_ = new MarkerFilters((int)scoreRoiMax_, (int)scoreRoiMin_, -1, (int)timeRoiMin_);
-    }
+            scoreRoiMin_ = new Scores(0);
+            imageFilters_ = new MarkerFilters(scoreRoiMin_, -1, (int)timeRoiMin_);
+        }
         //Overlay handlers:
         //Add image minature to overlay
         public void SetFilters(MarkerFilters filters)
@@ -98,12 +98,12 @@ namespace FTP_Image_Browser
         }
         public double AddPOI(double lat, double lng)
         {
-            overlayZoom_.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(lat,lng), GMarkerGoogleType.blue_dot));
+            overlayZoom_.Markers.Add(new GMarkerGoogle(new GMap.NET.PointLatLng(lat, lng), GMarkerGoogleType.blue_dot));
             //Calculate total distance on map in meters//
             double distance = 0;
-            if(overlayZoom_.Markers.Count > 3)
+            if (overlayZoom_.Markers.Count > 3)
             {
-                for(int i = 2; i < overlayZoom_.Markers.Count; ++i)
+                for (int i = 2; i < overlayZoom_.Markers.Count; ++i)
                 {
                     //overlayZoom_.Routes.Add(new)
                 }
@@ -119,16 +119,16 @@ namespace FTP_Image_Browser
             int pixdist = downPointScale_.LocalArea.Y - upPointScale_.LocalArea.Y;
             int size10m = pixdist;
             //Console.WriteLine(sizenew.ToString() + " - zoom");
-            if(overlayImg_ != null)
+            if (overlayImg_ != null)
             {
                 foreach (GMapMarker marker in overlayImg_.Markers)
                 {
                     MarkerData imgParam = (MarkerData)marker.Tag;
-                    double width =  (double)imgParam.baseX / (double) imgParam.pixelDensity;//width in m
-                    double height = (double)imgParam.baseY / (double) imgParam.pixelDensity;//height in m
-                    marker.Size = new Size((int) Math.Round(width * size10m + +sizeSkew_) , (int)Math.Round( height * size10m +sizeSkew_));
+                    double width = (double)imgParam.baseX / (double)imgParam.pixelDensity;//width in m
+                    double height = (double)imgParam.baseY / (double)imgParam.pixelDensity;//height in m
+                    marker.Size = new Size((int)Math.Round(width * size10m + +sizeSkew_), (int)Math.Round(height * size10m + sizeSkew_));
                 }
-                
+
             }
         }
         public void OverlayWorkingDir()
@@ -149,7 +149,7 @@ namespace FTP_Image_Browser
             if (newImg == null) return;
             int imagesTotal = newImg.Count();
             int imageCurrent = 1;
-            foreach(string file in newImg)
+            foreach (string file in newImg)
             {
                 AddToOverlay(WorkingDir + "/" + file);
                 imageCurrent++;
@@ -169,7 +169,10 @@ namespace FTP_Image_Browser
             }
             //verify filters
             //Filter score
-            if (iwd.data.score > imageFilters_.scoreMax || iwd.data.score < imageFilters_.scoreMin)
+            Scores imageScore = new Scores(iwd.data.score);
+            imageScore.score[2] = 1;
+            imageScore.score[3] = 1;
+            if (imageScore > imageFilters_.scoreMin)
                 return;
             if (iwd.data.time < imageFilters_.timeMin)
                 return;
@@ -184,15 +187,15 @@ namespace FTP_Image_Browser
             marker.Offset = new Point(0, 0);
             unsafe
             {
-            marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude, 
-                GetPixelDensity(iwd.data.planeAltitude),convertImageName(iwd.data.imageName));
+                marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude,
+                    GetPixelDensity(iwd.data.planeAltitude), convertImageName(iwd.data.imageName));
             }
             lock (overlayImgLock_)
             {
                 overlayImg_.Markers.Add(marker);
             }
         }
-        
+
         private void AddToOverlay(string filename)
         {
             ImageWithData iwd = decode(filename);
@@ -209,26 +212,24 @@ namespace FTP_Image_Browser
                 return;
             }
             //Add to general image collection
-            lock(imageCollectionLock_)
+            lock (imageCollectionLock_)
             {
                 imageCollection_.Add(iwd);
                 //Update collection limits//
                 if (timeRoiMin_ == 0) timeRoiMin_ = iwd.data.time;
                 if (iwd.data.time < timeRoiMin_) timeRoiMin_ = iwd.data.time;
                 if (iwd.data.time > timeRoiMax_) timeRoiMax_ = iwd.data.time;
-
-                if (scoreRoiMin_ == 0) scoreRoiMin_ = iwd.data.score;
-                if (scoreRoiMax_ == 10000) scoreRoiMax_ = iwd.data.score;
-                if (iwd.data.score < scoreRoiMin_) scoreRoiMin_ = iwd.data.score;
-                if (iwd.data.score > scoreRoiMax_) scoreRoiMax_ = iwd.data.score;
             }
             //verify filters
             //Filter score
-            if (iwd.data.score > imageFilters_.scoreMax || iwd.data.score < imageFilters_.scoreMin)
+            Scores imageScore = new Scores(iwd.data.score);
+            imageScore.score[2] = 1;
+            imageScore.score[3] = 1;
+            if ((imageScore > imageFilters_.scoreMin))
                 return;
             if (iwd.data.time < imageFilters_.timeMin)
                 return;
-            if(imageFilters_.timeMax != -1)
+            if (imageFilters_.timeMax != -1)
             {
                 //infinite rois
                 if (iwd.data.time > imageFilters_.timeMax)
@@ -239,8 +240,8 @@ namespace FTP_Image_Browser
             marker.Offset = new Point(0, 0);
             unsafe
             {
-            marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude, 
-                GetPixelDensity(iwd.data.planeAltitude), convertImageName(iwd.data.imageName));
+                marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude,
+                    GetPixelDensity(iwd.data.planeAltitude), convertImageName(iwd.data.imageName));
             }
             lock (overlayImgLock_)
             {
@@ -267,7 +268,7 @@ namespace FTP_Image_Browser
         // Added by KŁ 11.06.2016
         public struct ImageData
         {
-            unsafe public fixed byte imageName[32]; 
+            unsafe public fixed byte imageName[32];
             public UInt32 time;
             public UInt32 score;
             public float targetLatitude;
@@ -277,7 +278,7 @@ namespace FTP_Image_Browser
             public float planeLatitude;
             public float planeLongitude;
             public float planeYaw;
-           // unsafe public fixed char imageName[60];
+            // unsafe public fixed char imageName[60];
         }
         public struct ImageWithData
         {
@@ -285,7 +286,72 @@ namespace FTP_Image_Browser
 
             public ImageData data;
         }
-        private unsafe string convertImageName(byte *input)
+        public class Scores
+        {
+            public byte[] score;
+            public Scores(uint scoreToDecode)
+            {
+                score = new byte[4];
+                for (int i = 0; i < 4; ++i)
+                {
+                    score[i] = (byte)(0xFF & ((uint)scoreToDecode >> 8 * i));
+                }
+                int a = 5;
+            }
+            public Scores(byte[] scoreTable)
+            {
+                score = scoreTable;
+            }
+            public Scores(byte density, byte hue, byte hog, byte unknown)
+            {
+                byte[] scoreTable = new byte[4];
+                scoreTable[0] = density;
+                scoreTable[1] = hue;
+                scoreTable[2] = hog;
+                scoreTable[3] = unknown;
+
+                score = scoreTable;
+            }
+            public static bool operator <=(Scores a, Scores b)
+            {
+                for (int i = 0; i < 4; ++i)
+                {
+                    if (a.score[i] >= b.score[i])
+                        return false;
+                }
+                return true;
+            }
+            public static bool operator >=(Scores a, Scores b)
+            {
+                for (int i = 0; i < 4; ++i)
+                {
+                    if (a.score[i] <= b.score[i])
+                        return false;
+                }
+                return true;
+            }
+            public static bool operator <(Scores a, Scores b)
+            {
+                for (int i = 0; i < 4; ++i)
+                {
+                    if (a.score[i] > b.score[i])
+                        return true;
+                }
+                return false;
+            }
+            public static bool operator >(Scores a, Scores b)
+            {
+                for (int i = 0; i < 4; ++i)
+                {
+                    if (a.score[i] < b.score[i])
+                        return true;
+                }
+                return false;
+            }
+        }
+
+
+        private unsafe string convertImageName(byte* input)
         {
             byte[] resbyt = new byte[32];
             for (int i = 0; i < 32; i++) resbyt[i] = input[i];
@@ -302,15 +368,25 @@ namespace FTP_Image_Browser
             Encoding.UTF8.GetBytes(result)
                 )
             );
-            return asAscii;
+            int start = asAscii.IndexOf("img_");
+            int stop = asAscii.IndexOf(".bin");
+            string name = asAscii.Substring(start, stop - start + ".bin".Length);
+
+            return name;
         }
         public ImageWithData decode(string filename)
         {
             if (!filename.EndsWith(".jpg"))
                 return new ImageWithData();
             ImageData dataStructure = new ImageData();
-
-            byte[] bytes = System.IO.File.ReadAllBytes(filename);
+            byte[] bytes;
+            try {
+                bytes = System.IO.File.ReadAllBytes(filename);
+            }
+            catch
+            {
+                return new ImageWithData();
+            }
             if (bytes.GetLength(0) == 0) return new ImageWithData();
 
             int sizeOFStructure = System.Runtime.InteropServices.Marshal.SizeOf(typeof(ImageData));
@@ -336,7 +412,6 @@ namespace FTP_Image_Browser
             //}
 
             //string result = System.Text.Encoding.ASCII.GetString(resbyt);
-
             iwd.image = Image.FromFile(filename);
             iwd.data = dataStructure;
 
@@ -441,7 +516,7 @@ namespace FTP_Image_Browser
         List<ImageWithData> imageCollection_;
         public MarkerFilters imageFilters_;
         public uint timeRoiMin_ = 0, timeRoiMax_ = 1;
-        public uint scoreRoiMin_ = 0, scoreRoiMax_ = 10000;
+        public Scores scoreRoiMin_ = new Scores(0);
     }
 
 }

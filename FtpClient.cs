@@ -89,6 +89,8 @@ namespace FTP_Image_Browser
         }
         public void FtpCommDirectoryWorker(object sender, DoWorkEventArgs e)
         {
+            if (commWorking == true)
+                return;
             commWorking = true;
             string remoteDir = (string)e.Argument;
             List<string> dirListing;
@@ -121,6 +123,12 @@ namespace FTP_Image_Browser
             //Get list of remote files
             (sender as BackgroundWorker).ReportProgress(5, "Listing working directory");
             List<string> dirFiles = FtpListDirectory(WorkingDir);
+            if(dirFiles == null)
+            {
+                (sender as BackgroundWorker).ReportProgress(100, "File Sync error");
+                autoWorking = false;
+                return;
+            }
             //Create list of local files
             string[] localFiles = Directory.GetFiles(WorkingDir);
             (sender as BackgroundWorker).ReportProgress(10, "Sorting downloaded files");
@@ -265,6 +273,7 @@ namespace FTP_Image_Browser
             request.UsePassive = true;
             request.UseBinary = true;
             request.KeepAlive = true;
+            request.Timeout = 20000;//20s timeout
 
             FtpWebResponse response;
             try
