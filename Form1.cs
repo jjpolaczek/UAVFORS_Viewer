@@ -22,11 +22,6 @@ namespace FTP_Image_Browser
         {
             ftpClient = new FtpClient();
             treeViewFolders = new TreeView();
-            Image folderIcon1 = System.Drawing.Image.FromFile("..\\..\\images\\folder2.png");
-            Image folderIcon2 = System.Drawing.Image.FromFile("..\\..\\images\\folder.png");
-            treeViewFolders.ImageList = new ImageList();
-            treeViewFolders.ImageList.Images.Add(folderIcon1);
-            treeViewFolders.ImageList.Images.Add(folderIcon2);
             InitializeComponent();
             //FtpListDirectory();
         }
@@ -153,11 +148,6 @@ namespace FTP_Image_Browser
                 foreach (string str in dirListing)
                 {
                     this.treeViewFolders.Nodes.Add(str);
-                }
-                for (int i = 0; i < treeViewFolders.Nodes.Count; ++i)
-                {
-                    treeViewFolders.Nodes[i].SelectedImageIndex = 1;
-                    treeViewFolders.Nodes[i].ImageIndex = 0;
                 }
                 connectionState_ = FtpConnectionState.FolderListing;
 
