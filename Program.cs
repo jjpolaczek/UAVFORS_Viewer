@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FTP_Image_Browser
+namespace UAVFORS_Viewer
 {
     static class Program
     {

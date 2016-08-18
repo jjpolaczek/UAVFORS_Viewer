@@ -1,4 +1,4 @@
-﻿namespace FTP_Image_Browser
+﻿namespace UAVFORS_Viewer
 {
     partial class Form1
     {

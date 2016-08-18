@@ -13,7 +13,7 @@ using System.Reflection;
 using System.Reflection.Emit;
 using System.ComponentModel;
 
-namespace FTP_Image_Browser
+namespace UAVFORS_Viewer
 {
     class Overlay
     {

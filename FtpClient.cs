@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Text;
 
-namespace FTP_Image_Browser
+namespace UAVFORS_Viewer
 {
     class FtpClient
     {

@@ -8,7 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace FTP_Image_Browser
+namespace UAVFORS_Viewer
 {
     public partial class TopViewDialog : Form
     {

@@ -11,7 +11,7 @@ using System.IO;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 
-namespace FTP_Image_Browser
+namespace UAVFORS_Viewer
 {
     public partial class Form1 : Form
     {
@@ -471,7 +471,12 @@ namespace FTP_Image_Browser
 
         private void modifyToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            ServerSettingsDialog settingsDialog = new ServerSettingsDialog();
+            var result = settingsDialog.ShowDialog();
+            if (result == DialogResult.OK)
+            {
 
+            }
         }
     }
 }
