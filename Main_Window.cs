@@ -468,6 +468,11 @@ namespace FTP_Image_Browser
                 overlayImg.ResizeAll();
             }
         }
+
+        private void modifyToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }
 
