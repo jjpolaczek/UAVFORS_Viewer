@@ -14,13 +14,14 @@ namespace UAVFORS_Viewer
 {
     class FtpClient
     {
-        public FtpClient()
+        public FtpClient(ServerSettings set)
         {
-            WorkingDir = "UAVFORS";
+            settings = set;
+            WorkingDir = settings.directory;
         }
         public void Connect()
         {
-            foreach (string dir in FtpListDirectory("UAVFORS/"))
+            foreach (string dir in FtpListDirectory(settings.directory + "/"))
             {
                 //Console.WriteLine(dir);
             }
@@ -34,18 +35,22 @@ namespace UAVFORS_Viewer
 
         }
 
-
+        public void SetServerParams(ServerSettings set)
+        {
+            //Maybe check for active connections?
+            settings = set;
+        }
         public void FtpListDirectoryWorker(object sender, DoWorkEventArgs e)
         {
             autoWorking = true;
             string remoteDir = (string)e.Argument;
             (sender as BackgroundWorker).ReportProgress(0, "Connecting to Server");
             // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remoteDir);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(settings.domain + ":" + settings.port + "/" + remoteDir);
             request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
 
             FtpWebResponse response;
-            request.Credentials = new NetworkCredential(username_, password_);
+            request.Credentials = new NetworkCredential(settings.username, settings.password);
 
             (sender as BackgroundWorker).ReportProgress(25, "Connecting to Server");
             try
@@ -95,6 +100,7 @@ namespace UAVFORS_Viewer
             string remoteDir = (string)e.Argument;
             List<string> dirListing;
             dirListing = FtpListDirectory(remoteDir);
+            string commDir = settings.directory + "/comm";
             if (dirListing != null)
             {
                 for (int i = 0; i < dirListing.Count; i++)
@@ -102,9 +108,9 @@ namespace UAVFORS_Viewer
                     if (dirListing.ElementAt(i).Contains(".jpg"))
                     {
                         Console.WriteLine(dirListing.ElementAt(i));
-                        DownloadFile("UAVFORS/comm", dirListing.ElementAt(i), "UAVFORS/comm");
-                        RemoveFile("UAVFORS/comm", dirListing.ElementAt(i));
-                        e.Result = "UAVFORS/comm/" + dirListing.ElementAt(i);
+                        DownloadFile(commDir, dirListing.ElementAt(i), commDir);
+                        RemoveFile(commDir, dirListing.ElementAt(i));
+                        e.Result = commDir  + "/" + dirListing.ElementAt(i);
                         break;
                     }
                 }
@@ -205,14 +211,14 @@ namespace UAVFORS_Viewer
         public void RequestImage(string filename)
         {
             //List directory to look for existing request
-            List<string> dirlist = FtpListDirectory("UAVFORS/comm");
+            List<string> dirlist = FtpListDirectory(settings.directory + "/comm");
             if (dirlist.Contains("request.txt")) return;
             // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/UAVFORS/comm/request.txt");
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(settings.domain + ":" + settings.port + "/" + settings.directory + "/comm/request.txt");
             request.Method = WebRequestMethods.Ftp.UploadFile;
 
             // This example assumes the FTP site uses anonymous logon.
-            request.Credentials = new NetworkCredential(username_, password_);
+            request.Credentials = new NetworkCredential(settings.username, settings.password);
 
             // Copy the contents of the file to the request stream.
             //StreamReader sourceStream = new StreamReader("testfile.txt");
@@ -237,10 +243,10 @@ namespace UAVFORS_Viewer
         public void RemoveFile(string remotePath, string filename)
         {
             // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remotePath + "/" + filename);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(settings.domain + ":" + settings.port + "/" + remotePath + "/" + filename);
             request.Method = WebRequestMethods.Ftp.DeleteFile;
             
-            request.Credentials = new NetworkCredential(username_, password_);
+            request.Credentials = new NetworkCredential(settings.username, settings.password);
             request.KeepAlive = true;
 
             FtpWebResponse response;
@@ -265,11 +271,11 @@ namespace UAVFORS_Viewer
                 Directory.CreateDirectory(destinationPath);
             }
             // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remotePath + "/" + filename);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(settings.domain + ":" + settings.port + "/" + remotePath + "/" + filename);
             request.Method = WebRequestMethods.Ftp.DownloadFile;
 
             // use binary mode for file transfer
-            request.Credentials = new NetworkCredential(username_, password_);
+            request.Credentials = new NetworkCredential(settings.username, settings.password);
             request.UsePassive = true;
             request.UseBinary = true;
             request.KeepAlive = true;
@@ -306,12 +312,12 @@ namespace UAVFORS_Viewer
         public List<string> FtpListDirectory(string remoteDir)
         {
             // Get the object used to communicate with the server.
-            FtpWebRequest request = (FtpWebRequest)WebRequest.Create("ftp://" + serverDomain_ + ":" + serverPort_ + "/" + remoteDir);
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(settings.domain + ":" + settings.port + "/" + remoteDir);
             request.Method = WebRequestMethods.Ftp.ListDirectoryDetails;
 
             // This example assumes the FTP site uses anonymous logon.
             FtpWebResponse response;
-            request.Credentials = new NetworkCredential(username_, password_);
+            request.Credentials = new NetworkCredential(settings.username, settings.password);
             try
             {
                 response = (FtpWebResponse)request.GetResponse();
@@ -373,9 +379,10 @@ namespace UAVFORS_Viewer
         public bool commWorking { get; set; }
         //Server object
         //Default server parameters
-        private string serverDomain_ = "srv40.ddns.net";
-        private int serverPort_ = 2514;
-        private string username_ = "melavio";
-        private string password_ = "wietnamiec";
+        private ServerSettings settings;
+        //private string serverDomain_ = "srv40.ddns.net";
+        //private int serverPort_ = 2514;
+        //private string username_ = "melavio";
+        //private string password_ = "wietnamiec";
     }
 }

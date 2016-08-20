@@ -16,15 +16,8 @@ namespace UAVFORS_Viewer
 
     public partial class ServerSettingsDialog : Form
     {
-        [Serializable]
-        public class ServerSettings
-        {
-            public string address;
-            public int port;
-            public string username = null;
-            public string password = null;
-        }
-        private ServerSettings settings;
+
+        public ServerSettings settings;
         public ServerSettingsDialog()
         {
             InitializeComponent();
@@ -33,15 +26,37 @@ namespace UAVFORS_Viewer
 
         private void Form_Server_Settings_Load(object sender, EventArgs e)
         {
-            loadSettings();
+            settings = loadSettings();
+            if(settings != null)
+            {
+                updateFields();
+            }
+            else
+            {
+                settings = settingsDefault();
+                updateFields();
+            }
         }
-
+        private ServerSettings settingsDefault()
+        {
+            ServerSettings retval = new ServerSettings();
+            retval.domain = "ftp://sample.domain.net";
+            retval.directory = "UAVFORS";
+            retval.password = "";
+            retval.username = "username";
+            retval.port = 23;
+            return retval;
+        }
         private void textBoxAddress_TextChanged(object sender, EventArgs e)
         {
             TextBox box = (TextBox)sender;
-            settings.address = box.Text;
+            settings.domain = box.Text;
         }
-
+        private void textBoxDirectory_TextChanged(object sender, EventArgs e)
+        {
+            TextBox box = (TextBox)sender;
+            settings.directory = box.Text;
+        }
         private void numericUpDownPort_ValueChanged(object sender, EventArgs e)
         {
             NumericUpDown box = (NumericUpDown)sender;
@@ -69,7 +84,7 @@ namespace UAVFORS_Viewer
             this.DialogResult = DialogResult.OK;
             this.Close();
         }
-        private void loadSettings()
+        public ServerSettings loadSettings()
         {
             XmlSerializer mySerializer = new XmlSerializer(typeof(ServerSettings));
             FileStream myFileStream;
@@ -80,16 +95,17 @@ namespace UAVFORS_Viewer
             catch
             {
                 //Pokemon handle file not found exception//
-                return;
+                return null;
             }
             // Call the Deserialize method and cast to the object type.
-            settings = (ServerSettings)mySerializer.Deserialize(myFileStream);
-            updateFields();
-
+            ServerSettings retval = (ServerSettings)mySerializer.Deserialize(myFileStream);
+            myFileStream.Close();
+            return retval;
         }
         private void updateFields()
         {
-            textBoxAddress.Text = settings.address;
+            textBoxDomain.Text = settings.domain;
+            textBoxDirectory.Text = settings.directory;
             textBoxPassword.Text = settings.password;
             numericUpDownPort.Value = settings.port;
             textBoxUsername.Text = settings.username;
@@ -99,5 +115,16 @@ namespace UAVFORS_Viewer
             this.DialogResult = DialogResult.Cancel;
             this.Close();
         }
+
+
+    }
+    [Serializable]
+    public class ServerSettings
+    {
+        public string domain;
+        public string directory;
+        public int port;
+        public string username = null;
+        public string password = null;
     }
 }

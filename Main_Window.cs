@@ -20,8 +20,10 @@ namespace UAVFORS_Viewer
         Overlay overlayImg;
         public Form1()
         {
-            ftpClient = new FtpClient();
+            ServerSettingsDialog serverSettings = new ServerSettingsDialog();
+            ftpClient = new FtpClient(serverSettings.loadSettings());
             treeViewFolders = new TreeView();
+
             InitializeComponent();
             //FtpListDirectory();
         }
@@ -475,7 +477,10 @@ namespace UAVFORS_Viewer
             var result = settingsDialog.ShowDialog();
             if (result == DialogResult.OK)
             {
-
+                //disconnectf all connections//
+                disconnectToolStripMenuItem_Click(new object(), new EventArgs());
+                //Modify server parameters//
+                ftpClient.SetServerParams(settingsDialog.settings);
             }
         }
     }

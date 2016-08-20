@@ -17,3 +17,4 @@ C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS Viewer.application
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS Viewer.exe
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS Viewer.pdb
+C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\FTP_Image_Browser.csprojResolveAssemblyReference.cache
