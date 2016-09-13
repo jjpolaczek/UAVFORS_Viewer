@@ -102,14 +102,11 @@ namespace UAVFORS_Viewer
         }
         private void buttonMagic_Click(object sender, EventArgs e)
         {
-           // ftpClient.RequestImage("jebaj sie");
-           // return;
+            // ftpClient.RequestImage("jebaj sie");
+            // return;
             //ListCommDirAsync();
             //return;
-            if (overlayImg.sizeSkew_ == 20)
-                   overlayImg.sizeSkew_ = 0;
-            else if(overlayImg.sizeSkew_ == 0 )
-                overlayImg.sizeSkew_ = 20;
+            ftpClient.RequestTerrain((float)69.0,(float) -68.0);
             //gMapControl_OnMapZoomChanged();
             //gMapControl.ZoomAndCenterMarkers("images");
            // overlayImg.SetFiltersWorker(new object(), new DoWorkEventArgs(new Overlay.MarkerFilters(1000, 0, 1400000, 1300000)));
@@ -396,10 +393,15 @@ namespace UAVFORS_Viewer
             {
                 if(isOverMarker_ && isAutoMode_)
                 {
-                    DialogResult result = MessageBox.Show("Download corresponding image named " + ((Overlay.MarkerData)overMarker.Tag).sourceFileName, "ROI ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                    RoiDialog ask = new RoiDialog();
+                    DialogResult result = ask.ShowDialog();//MessageBox.Show("Download corresponding image named " + ((Overlay.MarkerData)overMarker.Tag).sourceFileName, "ROI ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)
                     {
                         ftpClient.RequestImage(((Overlay.MarkerData)overMarker.Tag).sourceFileName);
+                    }
+                    else if (result == DialogResult.OK)
+                    {
+                        ftpClient.RequestTerrain(((Overlay.MarkerData)overMarker.Tag).latitude, ((Overlay.MarkerData)overMarker.Tag).longitude);
                     }
                     else
                     {

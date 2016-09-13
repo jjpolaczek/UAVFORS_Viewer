@@ -41,7 +41,7 @@ namespace UAVFORS_Viewer
 
         public struct MarkerData
         {
-            public MarkerData(int x, int y, float yawAngle, float alt, int pixdens, string filename)
+            public MarkerData(int x, int y, float yawAngle, float alt, int pixdens, string filename, float lat, float lng)
             {
                 baseX = x;
                 baseY = y;
@@ -52,6 +52,8 @@ namespace UAVFORS_Viewer
                 if (filename[0] != 'i')
                     Console.WriteLine("WTF");
                 //imgName = imgname;
+                latitude = lat;
+                longitude = lng;
             }
             public int baseX;
             public int baseY;
@@ -59,6 +61,8 @@ namespace UAVFORS_Viewer
             public int pixelDensity;
             public float yaw;
             public string sourceFileName;
+            public float latitude;
+            public float longitude;
             //public string imgName;
         }
         public struct MarkerFilters
@@ -188,7 +192,7 @@ namespace UAVFORS_Viewer
             unsafe
             {
                 marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude,
-                    GetPixelDensity(iwd.data.planeAltitude), convertImageName(iwd.data.imageName));
+                    GetPixelDensity(iwd.data.planeAltitude), convertImageName(iwd.data.imageName), iwd.data.targetLatitude, iwd.data.targetLongitude);
             }
             lock (overlayImgLock_)
             {
@@ -241,7 +245,7 @@ namespace UAVFORS_Viewer
             unsafe
             {
                 marker.Tag = new MarkerData(iwd.image.Size.Width, iwd.image.Size.Height, iwd.data.planeYaw, iwd.data.planeAltitude,
-                    GetPixelDensity(iwd.data.planeAltitude), convertImageName(iwd.data.imageName));
+                    GetPixelDensity(iwd.data.planeAltitude), convertImageName(iwd.data.imageName), iwd.data.targetLatitude, iwd.data.targetLongitude);
             }
             lock (overlayImgLock_)
             {
