@@ -22,6 +22,15 @@ namespace UAVFORS_Viewer
         {
             InitializeComponent();
             settings = new ServerSettings();
+            ServerSettings loaded_settings = loadSettings();
+            if(loaded_settings!=null)
+            {
+                settings = loaded_settings;
+            }
+            else
+            {
+                settings = settingsDefault();
+            }
         }
 
         private void Form_Server_Settings_Load(object sender, EventArgs e)

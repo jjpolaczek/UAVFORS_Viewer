@@ -21,7 +21,7 @@ namespace UAVFORS_Viewer
         public Form1()
         {
             ServerSettingsDialog serverSettings = new ServerSettingsDialog();
-            ftpClient = new FtpClient(serverSettings.loadSettings());
+            ftpClient = new FtpClient(serverSettings.settings);
             treeViewFolders = new TreeView();
 
             InitializeComponent();
