@@ -184,6 +184,8 @@ namespace UAVFORS_Viewer
             else if(connectionState_ == FtpConnectionState.Synchronised)
             {
                 //Add only new nodes
+                if (filesDownloaded == null)
+                    return;
                 foreach (string str in filesDownloaded)
                     treeViewFolders.Nodes[0].Nodes.Add(str);
                 overlayImg.OverlayNew(filesDownloaded);
