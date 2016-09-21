@@ -147,11 +147,14 @@ namespace UAVFORS_Viewer
             {
                 dirFiles.Remove(existingFile);
             }
+           
             e.Result = new string[dirFiles.Count];
             dirFiles.CopyTo((string[]) e.Result);
             //Start downloading remaining files
             int filesTotal = dirFiles.Count;
             int fileDownloaded = 1;
+            if(dirFiles.Count > 300)
+                dirFiles.RemoveRange(300, dirFiles.Count - 300);
             //Parallelize execution
             Object lockStatus = new Object();
             Parallel.ForEach(dirFiles, (file) =>
@@ -253,7 +256,7 @@ namespace UAVFORS_Viewer
             request.Credentials = new NetworkCredential(settings.username, settings.password);
 
             // Copy the contents of the file to the request stream.
-            string request_text = "GPS " + latitude.ToString() + " " + longitude.ToString();
+            string request_text = "GPS " + latitude.ToString("F7") + " " + longitude.ToString("F7");
             byte[] fileContents = Encoding.UTF8.GetBytes(request_text);
             request.ContentLength = fileContents.Length;
 
@@ -311,8 +314,11 @@ namespace UAVFORS_Viewer
             request.UsePassive = true;
             request.UseBinary = true;
             request.KeepAlive = true;
-            request.Timeout = 20000;//20s timeout
-
+            request.Timeout = 10000;//10s timeout
+            request.ReadWriteTimeout = 30000; // 30s for operation to finish
+            request.ConnectionGroupName = "UAVFORS";
+            request.ServicePoint.ConnectionLimit = 8;
+            System.Net.ServicePointManager.DefaultConnectionLimit = 8;
             FtpWebResponse response;
             try
             {
@@ -323,18 +329,36 @@ namespace UAVFORS_Viewer
                 System.Console.WriteLine("Server not responding, message: " + exception.Message);
                 return;
             }
+            catch 
+            {
+                System.Console.WriteLine("Unhandled exception");
+                return;
+            }
             //Console.WriteLine("Download Complete, status {0}", response.StatusDescription);
             Stream responseStream = response.GetResponseStream();
             StreamReader reader = new StreamReader(responseStream);
 
             //Write file to disk directory
             var fileStream = File.Create(destinationPath + "/" + filename);
-            //responseStream.Seek(0, SeekOrigin.Begin);
-            responseStream.CopyTo(fileStream);
-            fileStream.Flush();
-            fileStream.Close();
-            reader.Close();
-            response.Close();
+            try
+            {
+                responseStream.CopyTo(fileStream);
+            }
+            catch (System.IO.IOException)
+            {
+                System.Console.WriteLine("IO exception lololo");
+            }
+            catch(WebException exception)
+            {
+                System.Console.WriteLine("Server not responding, message: " + exception.Message);
+            }
+            finally
+            {
+                fileStream.Flush();
+                fileStream.Close();
+                reader.Close();
+                response.Close();
+            }
 
         }
         public void DownloadFileWorkingDir(string filename)
