@@ -32,6 +32,8 @@
             this.button_image = new System.Windows.Forms.Button();
             this.button_terrain = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
+            this.label_latitude = new System.Windows.Forms.Label();
+            this.label_longitude = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // button_cancel
@@ -73,11 +75,31 @@
             this.label1.TabIndex = 3;
             this.label1.Text = "What do you want to do with this ROI? ";
             // 
+            // label_latitude
+            // 
+            this.label_latitude.AutoSize = true;
+            this.label_latitude.Location = new System.Drawing.Point(20, 58);
+            this.label_latitude.Name = "label_latitude";
+            this.label_latitude.Size = new System.Drawing.Size(67, 17);
+            this.label_latitude.TabIndex = 4;
+            this.label_latitude.Text = "Latitude: ";
+            // 
+            // label_longitude
+            // 
+            this.label_longitude.AutoSize = true;
+            this.label_longitude.Location = new System.Drawing.Point(201, 58);
+            this.label_longitude.Name = "label_longitude";
+            this.label_longitude.Size = new System.Drawing.Size(79, 17);
+            this.label_longitude.TabIndex = 5;
+            this.label_longitude.Text = "Longitude: ";
+            // 
             // RoiDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(445, 120);
+            this.Controls.Add(this.label_longitude);
+            this.Controls.Add(this.label_latitude);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.button_terrain);
             this.Controls.Add(this.button_image);
@@ -95,5 +117,7 @@
         private System.Windows.Forms.Button button_image;
         private System.Windows.Forms.Button button_terrain;
         private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label label_latitude;
+        private System.Windows.Forms.Label label_longitude;
     }
 }

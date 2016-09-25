@@ -18,6 +18,7 @@ namespace UAVFORS_Viewer
         {
             settings = set;
             WorkingDir = settings.directory;
+            System.Net.ServicePointManager.DefaultConnectionLimit = 10;
         }
         public void Connect()
         {
@@ -157,7 +158,8 @@ namespace UAVFORS_Viewer
                 dirFiles.RemoveRange(300, dirFiles.Count - 300);
             //Parallelize execution
             Object lockStatus = new Object();
-            Parallel.ForEach(dirFiles, (file) =>
+            ParallelOptions options = new ParallelOptions { MaxDegreeOfParallelism = 8 };
+            Parallel.ForEach(dirFiles, options,(file) =>
             {
                 DownloadFileWorkingDir(file);
                 lock (lockStatus)
@@ -317,8 +319,7 @@ namespace UAVFORS_Viewer
             request.Timeout = 10000;//10s timeout
             request.ReadWriteTimeout = 30000; // 30s for operation to finish
             request.ConnectionGroupName = "UAVFORS";
-            request.ServicePoint.ConnectionLimit = 8;
-            System.Net.ServicePointManager.DefaultConnectionLimit = 8;
+            //request.ServicePoint.ConnectionLimit = 10;
             FtpWebResponse response;
             try
             {

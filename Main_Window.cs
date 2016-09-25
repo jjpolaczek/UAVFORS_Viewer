@@ -34,7 +34,7 @@ namespace UAVFORS_Viewer
             // Initialize map:
             gMapControl.MapProvider = GMap.NET.MapProviders.BingHybridMapProvider.Instance;
             GMap.NET.GMaps.Instance.Mode = GMap.NET.AccessMode.ServerAndCache;
-            gMapControl.SetPositionByKeywords("Warsaw, Poland");
+            gMapControl.SetPositionByKeywords("Dalby, Australia");
             //Initialize image overlay
             GMapOverlay imageOverlay = new GMapOverlay("images");
             GMapOverlay scaleOverlay = new GMapOverlay("scale");
@@ -183,7 +183,7 @@ namespace UAVFORS_Viewer
             }
             else if(connectionState_ == FtpConnectionState.Synchronised)
             {
-                //Add only new nodes
+                //Add only new nodes //todo outofrange exception here
                 if (filesDownloaded == null)
                     return;
                 foreach (string str in filesDownloaded)
@@ -395,7 +395,7 @@ namespace UAVFORS_Viewer
             {
                 if(isOverMarker_ && isAutoMode_)
                 {
-                    RoiDialog ask = new RoiDialog();
+                    RoiDialog ask = new RoiDialog(((Overlay.MarkerData)overMarker.Tag).latitude, ((Overlay.MarkerData)overMarker.Tag).longitude);
                     DialogResult result = ask.ShowDialog();//MessageBox.Show("Download corresponding image named " + ((Overlay.MarkerData)overMarker.Tag).sourceFileName, "ROI ", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)
                     {
