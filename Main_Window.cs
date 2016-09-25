@@ -487,6 +487,27 @@ namespace UAVFORS_Viewer
                 ftpClient.SetServerParams(settingsDialog.settings);
             }
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void buttonSendLocation_Click(object sender, EventArgs e)
+        {
+            float latitude, longitude;
+            try
+            {
+                latitude = Convert.ToSingle(textBoxLatitudeLand.Text);
+                longitude = Convert.ToSingle(textBoxLongitudeLand.Text);
+            }
+            catch
+            {
+                MessageBox.Show("Error", "It was not possible to read the location from the text boxes.", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+            ftpClient.RequestLanding(latitude, longitude);
+        }
     }
 }
 

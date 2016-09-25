@@ -277,6 +277,42 @@ namespace UAVFORS_Viewer
             }
             response.Close();
         }
+        public void RequestLanding(float latitude, float longitude)
+        {
+            //List directory to look for existing request
+            List<string> dirlist = FtpListDirectory(settings.directory + "/comm");
+            if (dirlist.Contains("request.txt"))
+            {
+                return;
+            }
+            // Get the object used to communicate with the server.
+            FtpWebRequest request = (FtpWebRequest)WebRequest.Create(settings.domain + ":" + settings.port + "/" + settings.directory + "/comm/request.txt");
+            request.Method = WebRequestMethods.Ftp.UploadFile;
+
+            // This example assumes the FTP site uses anonymous logon.
+            request.Credentials = new NetworkCredential(settings.username, settings.password);
+
+            // Copy the contents of the file to the request stream.
+            string request_text = "LND " + latitude.ToString("F7") + " " + longitude.ToString("F7");
+            byte[] fileContents = Encoding.UTF8.GetBytes(request_text);
+            request.ContentLength = fileContents.Length;
+
+            Stream requestStream = request.GetRequestStream();
+            requestStream.Write(fileContents, 0, fileContents.Length);
+            requestStream.Close();
+            FtpWebResponse response;
+            try
+            {
+                response = (FtpWebResponse)request.GetResponse();
+            }
+            catch (WebException exception)
+            {
+                System.Console.WriteLine("Server not responding, message: " + exception.Message);
+                return;
+            }
+            response.Close();
+        }
+
         public void RemoveFile(string remotePath, string filename)
         {
             // Get the object used to communicate with the server.
