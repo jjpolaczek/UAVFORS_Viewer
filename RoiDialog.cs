@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -17,6 +18,26 @@ namespace UAVFORS_Viewer
             InitializeComponent();
             label_latitude.Text += latitude.ToString("F7");
             label_longitude.Text += longitude.ToString("F7");
+            string latString, lngString;
+            if(latitude > 0)
+            {
+                latString = latitude.ToString("F7")+"N";
+            }
+            else
+            {
+                latString = (-latitude).ToString("F7") + "S";
+            }
+            if(longitude > 0)
+            {
+                lngString = longitude.ToString("F7")+"E";
+            }
+            else
+            {
+                lngString = (-longitude).ToString("F7") + "W";
+            }
+            latString = latString.Replace(',', '.');
+            lngString = lngString.Replace(',', '.');
+            linkLabel_gmaps.Text += latString + "+" + lngString;
         }
 
         private void button_cancel_Click(object sender, EventArgs e)
@@ -35,6 +56,12 @@ namespace UAVFORS_Viewer
         {
             this.DialogResult = DialogResult.Yes;
             this.Close();
+        }
+
+        private void linkLabel_gmaps_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo(linkLabel_gmaps.Text);
+            Process.Start(sInfo);
         }
     }
 }

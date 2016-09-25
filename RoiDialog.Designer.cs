@@ -34,6 +34,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label_latitude = new System.Windows.Forms.Label();
             this.label_longitude = new System.Windows.Forms.Label();
+            this.linkLabel_gmaps = new System.Windows.Forms.LinkLabel();
             this.SuspendLayout();
             // 
             // button_cancel
@@ -93,11 +94,23 @@
             this.label_longitude.TabIndex = 5;
             this.label_longitude.Text = "Longitude: ";
             // 
+            // linkLabel_gmaps
+            // 
+            this.linkLabel_gmaps.AutoSize = true;
+            this.linkLabel_gmaps.Location = new System.Drawing.Point(9, 20);
+            this.linkLabel_gmaps.Name = "linkLabel_gmaps";
+            this.linkLabel_gmaps.Size = new System.Drawing.Size(255, 17);
+            this.linkLabel_gmaps.TabIndex = 6;
+            this.linkLabel_gmaps.TabStop = true;
+            this.linkLabel_gmaps.Text = "https://www.google.com.au/maps/place/";
+            this.linkLabel_gmaps.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_gmaps_LinkClicked);
+            // 
             // RoiDialog
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(445, 120);
+            this.Controls.Add(this.linkLabel_gmaps);
             this.Controls.Add(this.label_longitude);
             this.Controls.Add(this.label_latitude);
             this.Controls.Add(this.label1);
@@ -119,5 +132,6 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label_latitude;
         private System.Windows.Forms.Label label_longitude;
+        private System.Windows.Forms.LinkLabel linkLabel_gmaps;
     }
 }
