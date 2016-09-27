@@ -326,9 +326,11 @@
             this.Controls.Add(this.labelStatus);
             this.Controls.Add(this.progressBar);
             this.Controls.Add(this.menuStrip1);
+            this.KeyPreview = true;
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "UAVFORS Viewer";
+            this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBoxLandCoordinates.ResumeLayout(false);

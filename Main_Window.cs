@@ -15,7 +15,7 @@ namespace UAVFORS_Viewer
 {
     public partial class Form1 : Form
     {
-        
+
         FtpClient ftpClient;
         public Form1()
         {
@@ -26,12 +26,11 @@ namespace UAVFORS_Viewer
             InitializeComponent();
             //FtpListDirectory();
         }
-        
 
         private void Form1_Load(object sender, EventArgs e)
         {
             // Initialize map:
-            if(FtpClient.CheckForInternetConnection())
+            if (FtpClient.CheckForInternetConnection())
             {
                 connectToolStripMenuItem_Click(new object(), new EventArgs());
             }
@@ -102,19 +101,19 @@ namespace UAVFORS_Viewer
             // return;
             //ListCommDirAsync();
             //return;
-            ftpClient.RequestTerrain((float)69.0,(float) -68.0);
+            ftpClient.RequestTerrain((float)69.0, (float)-68.0);
             //gMapControl_OnMapZoomChanged();
             //gMapControl.ZoomAndCenterMarkers("images");
-           // overlayImg.SetFiltersWorker(new object(), new DoWorkEventArgs(new Overlay.MarkerFilters(1000, 0, 1400000, 1300000)));
+            // overlayImg.SetFiltersWorker(new object(), new DoWorkEventArgs(new Overlay.MarkerFilters(1000, 0, 1400000, 1300000)));
         }
-        
+
 
 
         //event handlers for specific tasks
         //Handle directory list return value
         private void FtpListFolders(object sender, RunWorkerCompletedEventArgs e)
         {
-            List<string> dirListing = (List<string>) e.Result;
+            List<string> dirListing = (List<string>)e.Result;
             labelStatus.Text = "Idle";
             progressBar.Value = 0;
             //Check for exception and proper directory//
@@ -134,16 +133,16 @@ namespace UAVFORS_Viewer
                 connectionState_ = FtpConnectionState.FolderListing;
 
             }
-            else if(dirListing != null && ftpClient.WorkingDir.Contains("UAVFORS/"))
+            else if (dirListing != null && ftpClient.WorkingDir.Contains("UAVFORS/"))
             {
-                
+
 
             }
         }
         //Handle file sync return value
         private void FtpDownloadedFiles(object sender, RunWorkerCompletedEventArgs e)
         {
-            string [] filesDownloaded = (string[])e.Result;
+            string[] filesDownloaded = (string[])e.Result;
 
             labelStatus.Text = "Idle";
             progressBar.Value = 0;
@@ -157,10 +156,10 @@ namespace UAVFORS_Viewer
                     localFiles[i] = Path.GetFileName(localFiles[i]);
                 }
                 //Refresh local files in node
-                foreach(string str in localFiles)
+                foreach (string str in localFiles)
                     treeViewFolders.Nodes[0].Nodes.Add(str);
             }
-            else if(connectionState_ == FtpConnectionState.Synchronised)
+            else if (connectionState_ == FtpConnectionState.Synchronised)
             {
                 //Add only new nodes //todo outofrange exception here
                 if (filesDownloaded == null)
@@ -169,8 +168,6 @@ namespace UAVFORS_Viewer
                     treeViewFolders.Nodes[0].Nodes.Add(str);
             }
             //overlayImg.ResizeAll();
-            
-
         }
 
         //Handle communication work
@@ -190,7 +187,7 @@ namespace UAVFORS_Viewer
             ftpClient.WorkingDir = "UAVFORS/" + e.Node.Text;
             string dirSynched = e.Node.Text;
             DialogResult result = MessageBox.Show("Do you want to enable auto synchronisation mode?", "Auto mode", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
-            switch(result)
+            switch (result)
             {
                 case DialogResult.Yes:
                     //Start synchronisation
@@ -280,6 +277,23 @@ namespace UAVFORS_Viewer
                 return;
             }
             ftpClient.RequestLanding(latitude, longitude);
+        }
+
+
+
+        private void Form1_KeyDown(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Right:
+                    Console.WriteLine("ND Right");
+                    break;
+                case Keys.Left:
+                    Console.WriteLine("ND Leftytou fucking kangaroo");
+                    break;
+                default:
+                    break;
+            }
         }
     }
 }
