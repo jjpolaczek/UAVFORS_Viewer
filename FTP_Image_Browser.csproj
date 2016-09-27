@@ -91,18 +91,6 @@
     <Compile Include="Main_Window.Designer.cs">
       <DependentUpon>Main_Window.cs</DependentUpon>
     </Compile>
-    <Compile Include="RoiDialog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="RoiDialog.Designer.cs">
-      <DependentUpon>RoiDialog.cs</DependentUpon>
-    </Compile>
-    <Compile Include="ViewDisplay.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="ViewDisplay.Designer.cs">
-      <DependentUpon>ViewDisplay.cs</DependentUpon>
-    </Compile>
     <Compile Include="Form_Server_Settings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -110,7 +98,6 @@
       <DependentUpon>Form_Server_Settings.cs</DependentUpon>
     </Compile>
     <Compile Include="FtpClient.cs" />
-    <Compile Include="Overlay.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="Form_Server_Settings.resx">
@@ -118,12 +105,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Main_Window.resx">
       <DependentUpon>Main_Window.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="RoiDialog.resx">
-      <DependentUpon>RoiDialog.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="ViewDisplay.resx">
-      <DependentUpon>ViewDisplay.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>

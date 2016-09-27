@@ -17,7 +17,6 @@ namespace UAVFORS_Viewer
     {
         
         FtpClient ftpClient;
-        Overlay overlayImg;
         public Form1()
         {
             ServerSettingsDialog serverSettings = new ServerSettingsDialog();
@@ -88,7 +87,6 @@ namespace UAVFORS_Viewer
         private void disconnectToolStripMenuItem_Click(object sender, EventArgs e)
         {
             ftpClient.Disconnect();
-            overlayImg.Clear();
             treeViewFolders.Nodes.Clear();
             if (isAutoMode_)
             {
@@ -161,8 +159,6 @@ namespace UAVFORS_Viewer
                 //Refresh local files in node
                 foreach(string str in localFiles)
                     treeViewFolders.Nodes[0].Nodes.Add(str);
-                overlayImg.WorkingDir = ftpClient.WorkingDir;
-                overlayImg.OverlayWorkingDir();
             }
             else if(connectionState_ == FtpConnectionState.Synchronised)
             {
@@ -171,7 +167,6 @@ namespace UAVFORS_Viewer
                     return;
                 foreach (string str in filesDownloaded)
                     treeViewFolders.Nodes[0].Nodes.Add(str);
-                overlayImg.OverlayNew(filesDownloaded);
             }
             //overlayImg.ResizeAll();
             
@@ -181,12 +176,7 @@ namespace UAVFORS_Viewer
         //Handle communication work
         private void FtpCommComplete(object sender, RunWorkerCompletedEventArgs e)
         {
-            string fileToDisplay = (string)e.Result;
-            if(fileToDisplay != null)
-            {
-                TopViewDialog imageDisplay = new TopViewDialog(fileToDisplay);
-                imageDisplay.Show();
-            }
+
         }
         //General utility handlers
         private void progressChanged(object sender, ProgressChangedEventArgs e)
