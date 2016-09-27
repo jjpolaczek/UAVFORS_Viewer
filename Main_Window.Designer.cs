@@ -56,10 +56,10 @@
             this.textBoxLongitudeLand = new System.Windows.Forms.TextBox();
             this.buttonSendLocation = new System.Windows.Forms.Button();
             this.groupBoxLandCoordinates = new System.Windows.Forms.GroupBox();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.pictureBox_main = new System.Windows.Forms.PictureBox();
             this.menuStrip1.SuspendLayout();
             this.groupBoxLandCoordinates.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_main)).BeginInit();
             this.SuspendLayout();
             // 
             // menuStrip1
@@ -298,19 +298,20 @@
             this.groupBoxLandCoordinates.TabStop = false;
             this.groupBoxLandCoordinates.Text = "Remote landing";
             // 
-            // pictureBox1
+            // pictureBox_main
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(12, 31);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(919, 580);
-            this.pictureBox1.TabIndex = 31;
-            this.pictureBox1.TabStop = false;
+            this.pictureBox_main.Location = new System.Drawing.Point(12, 31);
+            this.pictureBox_main.Name = "pictureBox_main";
+            this.pictureBox_main.Size = new System.Drawing.Size(919, 580);
+            this.pictureBox_main.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_main.TabIndex = 31;
+            this.pictureBox_main.TabStop = false;
             // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1248, 656);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.pictureBox_main);
             this.Controls.Add(this.groupBoxLandCoordinates);
             this.Controls.Add(this.labelUTMzone);
             this.Controls.Add(this.labelUTME);
@@ -330,12 +331,13 @@
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "UAVFORS Viewer";
+            this.Load += new System.EventHandler(this.Form1_Load);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.Form1_KeyDown);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.groupBoxLandCoordinates.ResumeLayout(false);
             this.groupBoxLandCoordinates.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_main)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -370,7 +372,7 @@
         private System.Windows.Forms.TextBox textBoxLongitudeLand;
         private System.Windows.Forms.Button buttonSendLocation;
         private System.Windows.Forms.GroupBox groupBoxLandCoordinates;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox_main;
     }
 }
 

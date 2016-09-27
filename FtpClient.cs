@@ -154,11 +154,11 @@ namespace UAVFORS_Viewer
             //Start downloading remaining files
             int filesTotal = dirFiles.Count;
             int fileDownloaded = 1;
-            if(dirFiles.Count > 300)
-                dirFiles.RemoveRange(300, dirFiles.Count - 300);
+            if(dirFiles.Count > 5)
+                dirFiles.RemoveRange(5, dirFiles.Count - 5);
             //Parallelize execution
             Object lockStatus = new Object();
-            ParallelOptions options = new ParallelOptions { MaxDegreeOfParallelism = 8 };
+            ParallelOptions options = new ParallelOptions { MaxDegreeOfParallelism = 4 };
             Parallel.ForEach(dirFiles, options,(file) =>
             {
                 DownloadFileWorkingDir(file);

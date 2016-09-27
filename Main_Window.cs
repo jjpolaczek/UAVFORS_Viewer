@@ -24,6 +24,7 @@ namespace UAVFORS_Viewer
             treeViewFolders = new TreeView();
 
             InitializeComponent();
+            UAVcollection = new ImageList();
             //FtpListDirectory();
         }
 
@@ -135,8 +136,7 @@ namespace UAVFORS_Viewer
             }
             else if (dirListing != null && ftpClient.WorkingDir.Contains("UAVFORS/"))
             {
-
-
+                
             }
         }
         //Handle file sync return value
@@ -154,10 +154,23 @@ namespace UAVFORS_Viewer
                 for (int i = 0; i < localFiles.Length; ++i)
                 {
                     localFiles[i] = Path.GetFileName(localFiles[i]);
+                    int no;
+                    if(Int32.TryParse(localFiles[i], out no))
+                    {
+                       //We have images in correct format, load them into the image collection
+                    }
                 }
                 //Refresh local files in node
                 foreach (string str in localFiles)
+                {
                     treeViewFolders.Nodes[0].Nodes.Add(str);
+                }
+                //Take 1st image and display it
+                pictureBox_main.Image = Image.FromFile(ftpClient.WorkingDir + "//" + localFiles[0]);
+                if (Int32.TryParse(Path.GetFileNameWithoutExtension(localFiles[0]), out current_filename))
+                {
+                    //We have images in correct format, load them into the image collection
+                }
             }
             else if (connectionState_ == FtpConnectionState.Synchronised)
             {
@@ -243,7 +256,7 @@ namespace UAVFORS_Viewer
         private FtpConnectionState connectionState_ = FtpConnectionState.Disconnected;
         private Timer timerAutoSync_;
         private Timer timerCommUAV_;
-
+        ImageList UAVcollection;
 
         private void modifyToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -280,19 +293,64 @@ namespace UAVFORS_Viewer
         }
 
 
+        int current_filename = -1;
+        struct NumName
+        {
+            public NumName(int num, string path)
+            {
+                number = num;
+                filepath = path;
+            }
+            public int number;
+            public string filepath;
+        }
+        private List<NumName>GetSortedNumNameList(string path)
+        {
+            List<NumName> result = new List<NumName>();
+            string[] localFiles = Directory.GetFiles(ftpClient.WorkingDir);
 
+            foreach (string str in localFiles)
+            {
+                try
+                {
+                    result.Add(new NumName(Int32.Parse(Path.GetFileNameWithoutExtension(str)), str));
+                }
+                catch
+                {
+
+                }
+            }
+            result.Sort((x, y) => x.number.CompareTo(y.number));
+            return result;
+        }
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            switch (e.KeyCode)
+            if (current_filename != -1)
             {
-                case Keys.Right:
-                    Console.WriteLine("ND Right");
-                    break;
-                case Keys.Left:
-                    Console.WriteLine("ND Leftytou fucking kangaroo");
-                    break;
-                default:
-                    break;
+                List<NumName> files = GetSortedNumNameList(ftpClient.WorkingDir);
+                //Get current image index in array
+                var index = files.FindIndex(x => x.number == current_filename);
+                //Take 1st image and display it
+
+                switch (e.KeyCode)
+                {
+                    case Keys.Right:
+                        if(++index < files.Count)
+                        {
+                            pictureBox_main.Image = Image.FromFile(files[index].filepath);
+                            current_filename = files[index].number;
+                        }
+                        break;
+                    case Keys.Left:
+                        if(--index - 1 >= 0)
+                        {
+                            pictureBox_main.Image = Image.FromFile(files[index].filepath);
+                            current_filename = files[index].number;
+                        }
+                        break;
+                    default:
+                        break;
+                }
             }
         }
     }
