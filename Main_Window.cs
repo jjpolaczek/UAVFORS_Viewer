@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using System.IO;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
+using System.Runtime.InteropServices;
 
 namespace UAVFORS_Viewer
 {
@@ -354,6 +355,65 @@ namespace UAVFORS_Viewer
                         break;
                 }
             }
+        }
+        // Decoding jpeg files 
+        // Added by KŁ 11.06.2016
+        public struct ImageData
+        {
+            unsafe public fixed byte imageName[32];
+            public UInt32 time;
+            public UInt32 score;
+            public float targetLatitude;
+            public float targetLongitude;
+
+            public float planeAltitude;
+            public float planeLatitude;
+            public float planeLongitude;
+            public float planeYaw;
+            // unsafe public fixed char imageName[60];
+        }
+        public struct ImageWithData
+        {
+            public Image image;
+
+            public ImageData data;
+        }
+
+        public ImageWithData decode(string filename)
+        {
+            if (!filename.EndsWith(".jpg"))
+                return new ImageWithData();
+            ImageData dataStructure = new ImageData();
+            byte[] bytes;
+            try
+            {
+                bytes = System.IO.File.ReadAllBytes(filename);
+            }
+            catch
+            {
+                return new ImageWithData();
+            }
+            if (bytes.GetLength(0) == 0) return new ImageWithData();
+
+            int sizeOFStructure = System.Runtime.InteropServices.Marshal.SizeOf(typeof(ImageData));
+
+            byte[] dataBytes = new byte[sizeOFStructure];
+
+            for (int i = 0; i < sizeOFStructure; i++)
+                dataBytes[i] = bytes[bytes.GetLength(0) - sizeOFStructure + i];
+
+            int size = Marshal.SizeOf(dataStructure);
+            IntPtr ptr = Marshal.AllocHGlobal(size);
+
+            Marshal.Copy(dataBytes, 0, ptr, size);
+
+            dataStructure = (ImageData)Marshal.PtrToStructure(ptr, dataStructure.GetType());
+            Marshal.FreeHGlobal(ptr);
+            ImageWithData iwd = new ImageWithData();
+            iwd.image = Image.FromFile(filename);
+            iwd.data = dataStructure;
+
+            return iwd;
         }
     }
 }
