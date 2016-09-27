@@ -169,6 +169,7 @@ namespace UAVFORS_Viewer
                 pictureBox_main.Image = Image.FromFile(ftpClient.WorkingDir + "//" + localFiles[0]);
                 if (Int32.TryParse(Path.GetFileNameWithoutExtension(localFiles[0]), out current_filename))
                 {
+                    label_imgcount.Text = 1.ToString() + "/" + localFiles.Length.ToString();
                     //We have images in correct format, load them into the image collection
                 }
             }
@@ -331,6 +332,7 @@ namespace UAVFORS_Viewer
                 //Get current image index in array
                 var index = files.FindIndex(x => x.number == current_filename);
                 //Take 1st image and display it
+                label_imgcount.Text = index.ToString() + "/" + files.Count.ToString();
 
                 switch (e.KeyCode)
                 {

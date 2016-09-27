@@ -57,6 +57,7 @@
             this.buttonSendLocation = new System.Windows.Forms.Button();
             this.groupBoxLandCoordinates = new System.Windows.Forms.GroupBox();
             this.pictureBox_main = new System.Windows.Forms.PictureBox();
+            this.label_imgcount = new System.Windows.Forms.Label();
             this.menuStrip1.SuspendLayout();
             this.groupBoxLandCoordinates.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_main)).BeginInit();
@@ -307,10 +308,20 @@
             this.pictureBox_main.TabIndex = 31;
             this.pictureBox_main.TabStop = false;
             // 
+            // label_imgcount
+            // 
+            this.label_imgcount.AutoSize = true;
+            this.label_imgcount.Location = new System.Drawing.Point(937, 557);
+            this.label_imgcount.Name = "label_imgcount";
+            this.label_imgcount.Size = new System.Drawing.Size(31, 17);
+            this.label_imgcount.TabIndex = 32;
+            this.label_imgcount.Text = "X/N";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1248, 656);
+            this.Controls.Add(this.label_imgcount);
             this.Controls.Add(this.pictureBox_main);
             this.Controls.Add(this.groupBoxLandCoordinates);
             this.Controls.Add(this.labelUTMzone);
@@ -373,6 +384,7 @@
         private System.Windows.Forms.Button buttonSendLocation;
         private System.Windows.Forms.GroupBox groupBoxLandCoordinates;
         private System.Windows.Forms.PictureBox pictureBox_main;
+        private System.Windows.Forms.Label label_imgcount;
     }
 }
 
