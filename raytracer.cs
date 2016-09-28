@@ -176,7 +176,7 @@ namespace UAVFORS_Viewer
             double altitude = imgData.altitude;
 
             double yaw = -imgData.yaw;                                     // Cause z is down 
-            double pitch = imgData.pitch; 
+            double pitch = imgData.pitch - toRadian(80.0);
             double roll = imgData.roll; 
 
             Vec3 cameraOrigin = new Vec3(0, 0, altitude);
