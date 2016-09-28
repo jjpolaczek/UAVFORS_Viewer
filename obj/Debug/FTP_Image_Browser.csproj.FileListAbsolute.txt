@@ -11,10 +11,9 @@ C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\bin\Debug
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\bin\Debug\UAVFORS Viewer.pdb
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS_Viewer.ServerSettingsDialog.resources
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS_Viewer.Form1.resources
-C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS_Viewer.TopViewDialog.resources
-C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS_Viever.Properties.Resources.resources
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS Viewer.exe.manifest
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS Viewer.application
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS Viewer.exe
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS Viewer.pdb
 C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\FTP_Image_Browser.csprojResolveAssemblyReference.cache
+C:\Users\melka\Documents\Visual Studio 2015\Projects\FTP_Image_Browser\obj\Debug\UAVFORS_Viewer.Properties.Resources.resources
