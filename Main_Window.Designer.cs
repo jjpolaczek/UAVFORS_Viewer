@@ -307,6 +307,7 @@
             this.pictureBox_main.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox_main.TabIndex = 31;
             this.pictureBox_main.TabStop = false;
+            this.pictureBox_main.Click += new System.EventHandler(this.pictureBox_main_Click);
             // 
             // label_imgcount
             // 

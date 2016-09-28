@@ -18,6 +18,7 @@ namespace UAVFORS_Viewer
     {
 
         FtpClient ftpClient;
+        Raytracer raytracer;
         public Form1()
         {
             ServerSettingsDialog serverSettings = new ServerSettingsDialog();
@@ -26,6 +27,7 @@ namespace UAVFORS_Viewer
 
             InitializeComponent();
             UAVcollection = new ImageList();
+            raytracer = new Raytracer();
             //FtpListDirectory();
         }
 
@@ -394,6 +396,26 @@ namespace UAVFORS_Viewer
             iwd.data = dataStructure;
 
             return iwd;
+        }
+        public Point GetImagePixel(int x, int y)
+        {
+            Point p = new Point();
+
+            float xScale, yScale;
+            if (pictureBox_main.Image == null) return new Point();
+            xScale = pictureBox_main.Image.PhysicalDimension.Width / pictureBox_main.Width;
+            yScale = pictureBox_main.Image.PhysicalDimension.Height / pictureBox_main.Height;
+
+            p.X = (int)( (float)x * xScale);
+            p.Y = (int)( (float)y * yScale);
+            return p;
+        }
+        private void pictureBox_main_Click(object sender, EventArgs e)
+        {
+            MouseEventArgs args = (MouseEventArgs)e;
+            if (pictureBox_main.Image == null) return;
+            Console.WriteLine(GetImagePixel(args.Location.X,args.Location.Y).ToString());
+            //raytrace
         }
     }
     // Decoding jpeg files 

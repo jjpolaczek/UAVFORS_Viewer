@@ -1,14 +1,12 @@
 ﻿using System;
-using System.Numerics;
 
-namespace ConsoleApplication1
+namespace UAVFORS_Viewer
 {
-    unsafe class raytracer
+    class Raytracer
     {
-        static void Main(string[] args)
+        CameraParams camPar;
+       public Raytracer()
         {
-            ImageData imgData;
-            CameraParams camPar;
 
             camPar.focalLength = 0.016f;
             camPar.matrixWidth = 0.01244f;
@@ -16,29 +14,23 @@ namespace ConsoleApplication1
             camPar.widthPixels = 1936;
             camPar.heightPixels = 1216;
 
-            imgData.time = 0;
-            imgData.score = 0;
-            imgData.targetLatitude = 0;
-            imgData.targetLongitude = 0;
+            //imgData.time = 0;
+            //imgData.score = 0;
+            //imgData.targetLatitude = 0;
+            //imgData.targetLongitude = 0;
 
-            imgData.planeAltitude = 0;
-            imgData.planeLatitude = 0;
-            imgData.planeLongitude = 0;
-            imgData.planeYaw = 0;
+            //imgData.planeAltitude = 0;
+            //imgData.planeLatitude = 0;
+            //imgData.planeLongitude = 0;
+            //imgData.planeYaw = 0;
 
-            imgData.planeYaw = 0;
-            imgData.planeAltitude = 100;
-            imgData.planeLatitude  = 52.22f;
-            imgData.planeLongitude = 21.01f;
+            //imgData.planeYaw = 0;
+            //imgData.planeAltitude = 100;
+            //imgData.planeLatitude  = 52.22f;
+            //imgData.planeLongitude = 21.01f;
 
-            Pos target = Raycast( 900 , 600 , camPar,imgData);
-
-            Console.WriteLine("Output from raytracer : ");
-
-            Console.ReadKey();
-            Console.ReadKey();
+            //Pos target = Raycast( 900 , 600 , camPar,imgData);
         }
-
         public struct Quaternion
         {
             public double x;
@@ -183,47 +175,18 @@ namespace ConsoleApplication1
             public int widthPixels;
             public int heightPixels;
         }
-
-        public struct ImageData
-        {
-            unsafe public fixed byte imageName[32];
-            public UInt32 time;
-            public UInt32 score;
-            public float targetLatitude;
-            public float targetLongitude;
-
-            public float planeAltitude;
-            public float planeLatitude;
-            public float planeLongitude;
-            public float planeYaw;
-
-            public ImageData(int xxx)
-            {
-                xxx = 0;
-
-                time = 0;
-                score = 0;
-                targetLatitude = 0;
-                targetLongitude = 0;
-
-                planeAltitude = 0;
-                planeLatitude = 0;
-                planeLongitude = 0;
-                planeYaw = 0;
-            }
-        }
-
-        public double toRadian(double degree)
+        
+        public static double toRadian(double degree)
         {
             return ((2 * 3.14) / 360) * degree;
         }
 
-        public double DotProduct(Vec3 a, Vec3 b)
+        public static double DotProduct(Vec3 a, Vec3 b)
         {
             return a.x * b.x + a.y * b.y + a.z * b.z;
         }
 
-        public Pos Raycast(int pointOnImageX, int pointOnImageY, CameraParams camPar, ImageData imgData)
+        public static Pos Raycast(int pointOnImageX, int pointOnImageY, CameraParams camPar, ImageData imgData)
         {
             double longtitude = ((double)imgData.planeLongitude) / 10000000.0;  // from int32 to double , division by 10^7
             double latitude = ((double)imgData.planeLatitude) / 10000000.0;
