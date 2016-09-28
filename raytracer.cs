@@ -241,8 +241,8 @@ namespace UAVFORS_Viewer
 
             Vec3 GlobalPoint;
 
-	        GlobalPoint.x = pointOnPlane.x + longtitude;
-	        GlobalPoint.y = pointOnPlane.y + latitude;
+            GlobalPoint.x = longtitude + pointOnPlane.y;
+            GlobalPoint.y = latitude + pointOnPlane.x;
 
             return new Pos(GlobalPoint.y, GlobalPoint.x);
         }
