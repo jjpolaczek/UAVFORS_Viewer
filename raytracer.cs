@@ -188,11 +188,11 @@ namespace UAVFORS_Viewer
 
         public static Pos Raycast(int pointOnImageX, int pointOnImageY, CameraParams camPar, ImageData imgData)
         {
-            double longtitude = ((double)imgData.planeLongitude) / 10000000.0;  // from int32 to double , division by 10^7
-            double latitude = ((double)imgData.planeLatitude) / 10000000.0;
-            double altitude = ((double)imgData.planeAltitude) / 100.0;
+            double longtitude = ((double)imgData.longitude) / 10000000.0;  // from int32 to double , division by 10^7
+            double latitude = ((double)imgData.latitude) / 10000000.0;
+            double altitude = ((double)imgData.altitude) / 100.0;
 
-            double yaw = -imgData.planeYaw;                                     // Cause z is down 
+            double yaw = -imgData.yaw;                                     // Cause z is down 
             double pitch = toRadian(-90 + 15);                                  // Cause fixed pitch
             double roll = 0;                                                    // Cause gimbal
 

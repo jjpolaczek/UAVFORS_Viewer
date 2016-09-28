@@ -26,7 +26,6 @@ namespace UAVFORS_Viewer
             treeViewFolders = new TreeView();
 
             InitializeComponent();
-            UAVcollection = new ImageList();
             raytracer = new Raytracer();
             //FtpListDirectory();
         }
@@ -169,7 +168,9 @@ namespace UAVFORS_Viewer
                     treeViewFolders.Nodes[0].Nodes.Add(str);
                 }
                 //Take 1st image and display it
-                pictureBox_main.Image = Image.FromFile(ftpClient.WorkingDir + "//" + localFiles[0]);
+                ImageWithData iwd = decode(ftpClient.WorkingDir + "//" + localFiles[0]);
+                pictureBox_main.Image = iwd.image;
+                currentData = iwd.data;
                 if (Int32.TryParse(Path.GetFileNameWithoutExtension(localFiles[0]), out current_filename))
                 {
                     label_imgcount.Text = 1.ToString() + "/" + localFiles.Length.ToString();
@@ -260,7 +261,6 @@ namespace UAVFORS_Viewer
         private FtpConnectionState connectionState_ = FtpConnectionState.Disconnected;
         private Timer timerAutoSync_;
         private Timer timerCommUAV_;
-        ImageList UAVcollection;
 
         private void modifyToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -298,6 +298,7 @@ namespace UAVFORS_Viewer
 
 
         int current_filename = -1;
+        ImageData currentData;
         struct NumName
         {
             public NumName(int num, string path)
@@ -342,14 +343,20 @@ namespace UAVFORS_Viewer
                     case Keys.Right:
                         if(++index < files.Count)
                         {
-                            pictureBox_main.Image = Image.FromFile(files[index].filepath);
+                            pictureBox_main.Image.Dispose();
+                            ImageWithData iwd = decode(files[index].filepath);
+                            pictureBox_main.Image = iwd.image;
+                            currentData = iwd.data;
                             current_filename = files[index].number;
                         }
                         break;
                     case Keys.Left:
                         if(--index - 1 >= 0)
                         {
-                            pictureBox_main.Image = Image.FromFile(files[index].filepath);
+                            pictureBox_main.Image.Dispose();
+                            ImageWithData iwd = decode(files[index].filepath);
+                            pictureBox_main.Image = iwd.image;
+                            currentData = iwd.data;
                             current_filename = files[index].number;
                         }
                         break;
@@ -422,17 +429,14 @@ namespace UAVFORS_Viewer
     // Added by KŁ 11.06.2016
     public struct ImageData
     {
-        unsafe public fixed byte imageName[32];
         public UInt32 time;
         public UInt32 score;
-        public float targetLatitude;
-        public float targetLongitude;
-
-        public float planeAltitude;
-        public float planeLatitude;
-        public float planeLongitude;
-        public float planeYaw;
-        // unsafe public fixed char imageName[60];
+        public float latitude;
+        public float longitude;
+        public float altitude;
+        public float roll;
+        public float pitch;
+        public float yaw;
     }
     public struct ImageWithData
     {
