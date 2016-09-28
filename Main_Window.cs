@@ -435,7 +435,7 @@ namespace UAVFORS_Viewer
             Console.WriteLine(pixel.ToString());
 
             //raytrace
-            Raytracer.Pos position = Raytracer.Raycast(pixel.X, pixel.Y, raytracer.camPar, currentData);
+            Raytracer.Pos position = Raytracer.Raycast(pixel.X, pixel.Y, currentData);
             Console.WriteLine(currentData.latitude.ToString() + "new" +  position.lattitude.ToString() + " - latitude");
         }
     }

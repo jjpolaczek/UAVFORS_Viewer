@@ -58,6 +58,7 @@
             this.groupBoxLandCoordinates = new System.Windows.Forms.GroupBox();
             this.pictureBox_main = new System.Windows.Forms.PictureBox();
             this.label_imgcount = new System.Windows.Forms.Label();
+            this.linkLabel_gmap = new System.Windows.Forms.LinkLabel();
             this.menuStrip1.SuspendLayout();
             this.groupBoxLandCoordinates.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_main)).BeginInit();
@@ -318,10 +319,21 @@
             this.label_imgcount.TabIndex = 32;
             this.label_imgcount.Text = "X/N";
             // 
+            // linkLabel_gmap
+            // 
+            this.linkLabel_gmap.AutoSize = true;
+            this.linkLabel_gmap.Location = new System.Drawing.Point(318, 622);
+            this.linkLabel_gmap.Name = "linkLabel_gmap";
+            this.linkLabel_gmap.Size = new System.Drawing.Size(104, 17);
+            this.linkLabel_gmap.TabIndex = 33;
+            this.linkLabel_gmap.TabStop = true;
+            this.linkLabel_gmap.Text = "Googlemapsurl";
+            // 
             // Form1
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(1248, 656);
+            this.Controls.Add(this.linkLabel_gmap);
             this.Controls.Add(this.label_imgcount);
             this.Controls.Add(this.pictureBox_main);
             this.Controls.Add(this.groupBoxLandCoordinates);
@@ -386,6 +398,7 @@
         private System.Windows.Forms.GroupBox groupBoxLandCoordinates;
         private System.Windows.Forms.PictureBox pictureBox_main;
         private System.Windows.Forms.Label label_imgcount;
+        private System.Windows.Forms.LinkLabel linkLabel_gmap;
     }
 }
 
