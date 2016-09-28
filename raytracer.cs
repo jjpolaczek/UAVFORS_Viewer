@@ -244,7 +244,7 @@ namespace UAVFORS_Viewer
 	        GlobalPoint.x = pointOnPlane.x + longtitude;
 	        GlobalPoint.y = pointOnPlane.y + latitude;
 
-            return new Pos(pointOnPlane.y, pointOnPlane.x);
+            return new Pos(GlobalPoint.y, GlobalPoint.x);
         }
     }
 }

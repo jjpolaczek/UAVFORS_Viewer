@@ -11,6 +11,7 @@ using System.IO;
 using GMap.NET.WindowsForms;
 using GMap.NET.WindowsForms.Markers;
 using System.Runtime.InteropServices;
+using System.Diagnostics;
 
 namespace UAVFORS_Viewer
 {
@@ -414,6 +415,15 @@ namespace UAVFORS_Viewer
 
             return iwd;
         }
+        public void UpdateGmapLabel(double latitude, double longitude)
+        {
+            string latString, lngString;
+            latString = latitude.ToString("F7"); 
+            lngString = longitude.ToString("F7");
+            latString = latString.Replace(',', '.');
+            lngString = lngString.Replace(',', '.');
+            linkLabel_gmap.Text = "http://maps.google.com/maps?z=12&t=h&q=loc:" + lngString + "+" + latString;
+        }
         public Point GetImagePixel(int x, int y)
         {
             Point p = new Point();
@@ -437,6 +447,13 @@ namespace UAVFORS_Viewer
             //raytrace
             Raytracer.Pos position = Raytracer.Raycast(pixel.X, pixel.Y, currentData);
             Console.WriteLine(currentData.latitude.ToString() + "new" +  position.lattitude.ToString() + " - latitude");
+            UpdateGmapLabel(position.lattitude, position.longtitude);
+        }
+
+        private void linkLabel_gmap_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            ProcessStartInfo sInfo = new ProcessStartInfo(linkLabel_gmap.Text);
+            Process.Start(sInfo);
         }
     }
     // Decoding jpeg files 

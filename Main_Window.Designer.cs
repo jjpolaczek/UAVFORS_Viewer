@@ -328,6 +328,7 @@
             this.linkLabel_gmap.TabIndex = 33;
             this.linkLabel_gmap.TabStop = true;
             this.linkLabel_gmap.Text = "Googlemapsurl";
+            this.linkLabel_gmap.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel_gmap_LinkClicked);
             // 
             // Form1
             // 
