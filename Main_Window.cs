@@ -356,28 +356,8 @@ namespace UAVFORS_Viewer
                 }
             }
         }
-        // Decoding jpeg files 
-        // Added by KŁ 11.06.2016
-        public struct ImageData
-        {
-            unsafe public fixed byte imageName[32];
-            public UInt32 time;
-            public UInt32 score;
-            public float targetLatitude;
-            public float targetLongitude;
 
-            public float planeAltitude;
-            public float planeLatitude;
-            public float planeLongitude;
-            public float planeYaw;
-            // unsafe public fixed char imageName[60];
-        }
-        public struct ImageWithData
-        {
-            public Image image;
 
-            public ImageData data;
-        }
 
         public ImageWithData decode(string filename)
         {
@@ -415,5 +395,27 @@ namespace UAVFORS_Viewer
 
             return iwd;
         }
+    }
+    // Decoding jpeg files 
+    // Added by KŁ 11.06.2016
+    public struct ImageData
+    {
+        unsafe public fixed byte imageName[32];
+        public UInt32 time;
+        public UInt32 score;
+        public float targetLatitude;
+        public float targetLongitude;
+
+        public float planeAltitude;
+        public float planeLatitude;
+        public float planeLongitude;
+        public float planeYaw;
+        // unsafe public fixed char imageName[60];
+    }
+    public struct ImageWithData
+    {
+        public Image image;
+
+        public ImageData data;
     }
 }

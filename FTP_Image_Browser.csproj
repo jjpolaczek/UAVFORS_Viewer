@@ -100,6 +100,7 @@
     <Compile Include="FtpClient.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="raytracer.cs" />
     <EmbeddedResource Include="Form_Server_Settings.resx">
       <DependentUpon>Form_Server_Settings.cs</DependentUpon>
     </EmbeddedResource>
