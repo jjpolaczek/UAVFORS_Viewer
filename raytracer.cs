@@ -4,7 +4,7 @@ namespace UAVFORS_Viewer
 {
     class Raytracer
     {
-        CameraParams camPar;
+        public CameraParams camPar;
 
        public Raytracer()
         {
@@ -139,8 +139,8 @@ namespace UAVFORS_Viewer
 
         public struct Pos
         {
-            double lattitude;
-            double longtitude;
+            public double lattitude;
+            public double longtitude;
 
             public Pos(double x, double y)
             {
