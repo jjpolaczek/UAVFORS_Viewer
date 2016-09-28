@@ -245,7 +245,7 @@ namespace UAVFORS_Viewer
             }
             response.Close();
         }
-        public void RequestTerrain(float latitude, float longitude)
+        public void RequestPhoto()
         {
             //List directory to look for existing request
             List<string> dirlist = FtpListDirectory(settings.directory + "/comm");
@@ -258,7 +258,7 @@ namespace UAVFORS_Viewer
             request.Credentials = new NetworkCredential(settings.username, settings.password);
 
             // Copy the contents of the file to the request stream.
-            string request_text = "GPS " + latitude.ToString("F7") + " " + longitude.ToString("F7");
+            string request_text = "FOTO";
             byte[] fileContents = Encoding.UTF8.GetBytes(request_text);
             request.ContentLength = fileContents.Length;
 

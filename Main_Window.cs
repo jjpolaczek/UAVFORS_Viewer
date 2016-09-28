@@ -104,7 +104,7 @@ namespace UAVFORS_Viewer
             // return;
             //ListCommDirAsync();
             //return;
-            ftpClient.RequestTerrain((float)69.0, (float)-68.0);
+            ftpClient.RequestPhoto();
             //gMapControl_OnMapZoomChanged();
             //gMapControl.ZoomAndCenterMarkers("images");
             // overlayImg.SetFiltersWorker(new object(), new DoWorkEventArgs(new Overlay.MarkerFilters(1000, 0, 1400000, 1300000)));
@@ -328,22 +328,26 @@ namespace UAVFORS_Viewer
             result.Sort((x, y) => x.number.CompareTo(y.number));
             return result;
         }
+        bool isLoadingImage = false;
         private void Form1_KeyDown(object sender, KeyEventArgs e)
         {
-            if (current_filename != -1)
+            if (current_filename != -1 && isLoadingImage == false)
             {
+                isLoadingImage = true;
                 List<NumName> files = GetSortedNumNameList(ftpClient.WorkingDir);
                 //Get current image index in array
                 var index = files.FindIndex(x => x.number == current_filename);
                 //Take 1st image and display it
-                label_imgcount.Text = index.ToString() + "/" + files.Count.ToString();
 
                 switch (e.KeyCode)
                 {
                     case Keys.Right:
                         if(++index < files.Count)
                         {
-                            pictureBox_main.Image.Dispose();
+                            try
+                            { pictureBox_main.Image.Dispose(); }
+                            catch
+                            { }
                             ImageWithData iwd = decode(files[index].filepath);
                             pictureBox_main.Image = iwd.image;
                             currentData = iwd.data;
@@ -353,7 +357,10 @@ namespace UAVFORS_Viewer
                     case Keys.Left:
                         if(--index - 1 >= 0)
                         {
-                            pictureBox_main.Image.Dispose();
+                            try
+                            { pictureBox_main.Image.Dispose(); }
+                            catch
+                            { }
                             ImageWithData iwd = decode(files[index].filepath);
                             pictureBox_main.Image = iwd.image;
                             currentData = iwd.data;
@@ -363,6 +370,9 @@ namespace UAVFORS_Viewer
                     default:
                         break;
                 }
+
+                label_imgcount.Text = index.ToString() + "/" + files.Count.ToString();
+                isLoadingImage = false;
             }
         }
 
@@ -421,8 +431,12 @@ namespace UAVFORS_Viewer
         {
             MouseEventArgs args = (MouseEventArgs)e;
             if (pictureBox_main.Image == null) return;
-            Console.WriteLine(GetImagePixel(args.Location.X,args.Location.Y).ToString());
+            Point pixel = GetImagePixel(args.Location.X, args.Location.Y);
+            Console.WriteLine(pixel.ToString());
+
             //raytrace
+            Raytracer.Pos position = Raytracer.Raycast(pixel.X, pixel.Y, raytracer.camPar, currentData);
+            Console.WriteLine(currentData.latitude.ToString() + "new" +  position.lattitude.ToString() + " - latitude");
         }
     }
     // Decoding jpeg files 
