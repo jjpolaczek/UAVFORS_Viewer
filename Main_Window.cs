@@ -422,7 +422,7 @@ namespace UAVFORS_Viewer
             MouseEventArgs args = (MouseEventArgs)e;
             if (pictureBox_main.Image == null) return;
             Console.WriteLine(GetImagePixel(args.Location.X,args.Location.Y).ToString());
-            //raytrace
+            Raytracer.Pos pos = Raytracer.Raycast(args.Location.X, args.Location.Y, currentData);
         }
     }
     // Decoding jpeg files 

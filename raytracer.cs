@@ -2,9 +2,9 @@
 
 namespace UAVFORS_Viewer
 {
-    class Raytracer
+    public class Raytracer
     {
-        public CameraParams camPar;
+        public static CameraParams camPar;
 
        public Raytracer()
         {
@@ -78,7 +78,7 @@ namespace UAVFORS_Viewer
                 z = sz;
             }
 
-            public Vec3 rotate(Vec3 axis, double angle)
+            public void rotate(Vec3 axis, double angle)
             {
                 Quaternion a = new Quaternion(x, y, z, 0);
 
@@ -90,7 +90,7 @@ namespace UAVFORS_Viewer
 
                 c = c.multiply(b_conjugate);
 
-                return new Vec3(c.x, c.y, c.z);
+                this = new Vec3(c.x, c.y, c.z);
             }
 
             public void normalize()
@@ -169,7 +169,7 @@ namespace UAVFORS_Viewer
             return a.x * b.x + a.y * b.y + a.z * b.z;
         }
 
-        public static Pos Raycast(int pointOnImageX, int pointOnImageY, CameraParams camPar, ImageData imgData)
+        public static Pos Raycast(int pointOnImageX, int pointOnImageY,  ImageData imgData)
         {
             double longtitude = imgData.longitude;
             double latitude = imgData.latitude;
