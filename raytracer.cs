@@ -5,31 +5,14 @@ namespace UAVFORS_Viewer
     class Raytracer
     {
         CameraParams camPar;
+
        public Raytracer()
         {
-
-            camPar.focalLength = 0.016f;
-            camPar.matrixWidth = 0.01244f;
-            camPar.matrixHeight = 0.00983f;
-            camPar.widthPixels = 1936;
-            camPar.heightPixels = 1216;
-
-            //imgData.time = 0;
-            //imgData.score = 0;
-            //imgData.targetLatitude = 0;
-            //imgData.targetLongitude = 0;
-
-            //imgData.planeAltitude = 0;
-            //imgData.planeLatitude = 0;
-            //imgData.planeLongitude = 0;
-            //imgData.planeYaw = 0;
-
-            //imgData.planeYaw = 0;
-            //imgData.planeAltitude = 100;
-            //imgData.planeLatitude  = 52.22f;
-            //imgData.planeLongitude = 21.01f;
-
-            //Pos target = Raycast( 900 , 600 , camPar,imgData);
+            camPar.focalLength = 0.0036f;
+            camPar.matrixWidth = 0.00376f;
+            camPar.matrixHeight = 0.00274f;
+            camPar.widthPixels = 2592;
+            camPar.heightPixels = 1944;
         }
         public struct Quaternion
         {
@@ -188,13 +171,13 @@ namespace UAVFORS_Viewer
 
         public static Pos Raycast(int pointOnImageX, int pointOnImageY, CameraParams camPar, ImageData imgData)
         {
-            double longtitude = ((double)imgData.longitude) / 10000000.0;  // from int32 to double , division by 10^7
-            double latitude = ((double)imgData.latitude) / 10000000.0;
-            double altitude = ((double)imgData.altitude) / 100.0;
+            double longtitude = imgData.longitude;
+            double latitude = imgData.latitude;
+            double altitude = imgData.altitude;
 
             double yaw = -imgData.yaw;                                     // Cause z is down 
-            double pitch = toRadian(-90 + 15);                                  // Cause fixed pitch
-            double roll = 0;                                                    // Cause gimbal
+            double pitch = imgData.pitch; 
+            double roll = imgData.roll; 
 
             Vec3 cameraOrigin = new Vec3(0, 0, altitude);
 
@@ -235,6 +218,11 @@ namespace UAVFORS_Viewer
             Vec3 rayOrigin = cameraOrigin;
             Vec3 rayDirection = pointOnCameraScreen - rayOrigin;
             rayDirection.normalize();
+
+            if(Math.Abs(DotProduct(rayDirection, planeNormal)) < 0.00001)
+            {
+                return new Pos(0, 0);
+            }
 
             double distance = DotProduct(planeOrigin - cameraOrigin, planeNormal) /
             DotProduct(rayDirection, planeNormal);
